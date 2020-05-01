@@ -21,7 +21,7 @@ dashboardPage(skin = 'green',
               dashboardBody(tabItems(
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 # tabItem(tabName = "presentation", column(12, uiOutput('uiPresentation')))
-                tabItem(tabName = "mod", box(width12, uiOutput('uiMod')))
+                tabItem(tabName = "mod", column(12, uiOutput('uiMod')))
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 
               ))
