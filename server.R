@@ -48,7 +48,7 @@ shinyServer(function(input, output, session) {
   
   output$imageGain <- renderImage({
     filename <- normalizePath(file.path('./figures', 'courbeGainCumulée.png'))
-    list(src = filename, alt = 'Courbe de gain cumulée')
+    list(src = filename, alt = 'Courbe de gain cumulée', height='250px')
   }, deleteFile = FALSE)
   
   output$uiMod <- renderUI({
@@ -62,7 +62,7 @@ shinyServer(function(input, output, session) {
       ),
       
       # img(src=normalizePath(file.path('./figures','courbeGainCumulée.png')), height='400px')
-      box(width = 6, plotOutput('imageGain', height = 150))
+      column(width = 6, height = 1, plotOutput('imageGain'))
       # ,plotOutput('plotGain')
     )
   })
