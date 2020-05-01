@@ -21,6 +21,9 @@ exemples=list(
 source_python('randomForest.py')
 res=rf(datas)
 res=list(modele=res[[1]], confusion=res[[2]], score=res[[3]], y_test=res[[4]], y_probas=res[[5]])
-# res$clf
-# res$confusion
-# res$score
+
+if(F){
+  res$modele
+  res$confusion
+  res$score
+}

@@ -16,7 +16,7 @@ shinyServer(function(input, output, session) {
     exemples
   })
   
-  mod1 <- reactive({
+  res <- reactive({
     # py_run_file('pretraitement_rf.py')
     # py_run_file('randomForest.py')
     # list(mc=py$confusion, score=py$clfScore)
@@ -40,16 +40,17 @@ shinyServer(function(input, output, session) {
   #   courbeGain(res$y_test, res$y_probas)
   # })
   
-  output$rf <- renderUI({
-    res=rf()
+  output$uiMod <- renderUI({
+    res=res()
+    print('===========')
     list(
-      DT::dataTableOutput('datas'),
+      # DT::dataTableOutput('datas'),
       h5(input$modele),
       box(width=4,
         column(12,h6(res$modele)),
         column(12,h5(paste('Score :',res$score)))
       ),
-      column(6,img(src='courbeGainCumulée.png', height='400px', alt='Courbe de gain cumulée'))
+      # column(6,img(src='figures/courbeGainCumulée.png', height='400px', alt='Courbe de gain cumulée'))
         # ,plotOutput('plotGain')
     )
   })

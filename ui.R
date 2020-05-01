@@ -14,14 +14,14 @@ dashboardPage(skin = 'green',
                     selectInput('cible', 'Cible', choices = c('Churn?')),
                     selectInput('modele','Modèle', choices = c('randomForest'))
                   ),
-                  menuItem('Présentation des modèles','presentation'),
-                  menuItem("Modele 1", tabName = "mod1")                
+                  # menuItem('Présentation des modèles','presentation'),
+                  menuItem("Modele", tabName = "mod")                
                 )
               ),
               dashboardBody(tabItems(
                 # ------------------------------------------------------------------------------------------------------------------------------------
-                tabItem(tabName = "presentation", column(12, uiOutput('uiPresentation'))),
-                tabItem(tabName = "mod1", column(12, uiOutput('mod1')))
+                # tabItem(tabName = "presentation", column(12, uiOutput('uiPresentation')))
+                tabItem(tabName = "mod", box(width12, uiOutput('uiMod')))
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 
               ))

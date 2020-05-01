@@ -4,7 +4,7 @@
 import pandas as pd
 
 pafexemples='~/data/exemples/'
-# fic='churn.csv'
+# fichier='churn.csv'
 # cible='Churn?'
 
 def prepare_datas(fichier,cible):
