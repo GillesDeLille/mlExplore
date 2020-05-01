@@ -1,18 +1,26 @@
 
+if(F){
+  fichier='churn.csv'
+  cible='Churn?'
+}
+
 shinyServer(function(input, output, session) {
   
   # ----------------------------------------------------------------------------------------------------------------------------------------------------------
   
   datas <- reactive({
     source_python('pretraitement_rf.py')
+    # datas=prepare_datas(fichier,cible)
     datas=prepare_datas(input$fichier,input$cible)
   })
   exemples <- reactive({
-    datas=datas()
-    exemples=list(
-      data=datas[[1]] %>% as_tibble(),
-      target=datas[[2]] %>% as_tibble()
-    )
+    # datas=datas()
+    # exemples=list(
+    #   data=datas[[1]] %>% as_tibble(),
+    #   target=datas[[2]] %>% as_tibble()
+    # )
+    
+    exemples=read.csv(paste0(pafdata,'exemples/',input$fichier), dec = ',') %>% as_tibble()
     exemples
   })
   
@@ -30,7 +38,9 @@ shinyServer(function(input, output, session) {
   
   # ----------------------------------------------------------------------------------------------------------------------------------------------------------
   output$datas <- DT::renderDataTable({
-    datas=exemples()$data %>% cbind(exemples()$target %>% rename(target=value))
+    # datas=exemples$data %>% bind_cols(exemples$target %>% rename(target=value))
+    # datas=exemples()$data %>% bind_cols(exemples()$target %>% rename(target=value))
+    datas=exemples()
     datatable(datas, options = list(searching=T, paging=T, pageLength=100, scrollY=130, scrollX=800, info=F), rownames=F, selection=c(mode='single'))
   })
   
@@ -42,15 +52,14 @@ shinyServer(function(input, output, session) {
   
   output$uiMod <- renderUI({
     res=res()
-    print('===========')
     list(
-      # DT::dataTableOutput('datas'),
+      DT::dataTableOutput('datas'),
       h5(input$modele),
       box(width=4,
         column(12,h6(res$modele)),
         column(12,h5(paste('Score :',res$score)))
       ),
-      # column(6,img(src='figures/courbeGainCumulée.png', height='400px', alt='Courbe de gain cumulée'))
+      column(6,img(src='figures/courbeGainCumulée.png', height='400px', alt='Courbe de gain cumulée'))
         # ,plotOutput('plotGain')
     )
   })
