@@ -23,5 +23,5 @@ def rf(datas):
   y_probas=clf.predict_proba(X_test)
   skplt.metrics.plot_cumulative_gain(y_test, y_probas, title='Courbe de gain cumulée - Churns',  title_fontsize='small')
   # plt.show()
-  plt.savefig('www/courbeGainCumulée')
+  plt.savefig('figures/courbeGainCumulée')
   return (clf, confusion, clfScore, y_test, y_probas)
