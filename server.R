@@ -3,8 +3,7 @@ if(F){ fichier='churn.csv' ; cible='Churn?' }
 
 shinyServer(function(input, output, session) {
   
-  # ----------------------------------------------------------------------------------------------------------------------------------------------------------
-  
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
   exemples <- reactive({ read.csv(paste0(pafdata,'exemples/',input$fichier), dec = ',') %>% as_tibble() })
   datas <- reactive({
     source_python('pretraitement_rf.py')
@@ -32,7 +31,7 @@ shinyServer(function(input, output, session) {
     res=list(modele=res[[1]], confusion=res[[2]], score=res[[3]], y_test=res[[4]], y_probas=res[[5]])
   })
   
-  # ----------------------------------------------------------------------------------------------------------------------------------------------------------
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$datas <- DT::renderDataTable({
     datatable(exemples(),
               options = list(searching=T, paging=T, pageLength=100, scrollY=130, scrollX=800, info=F),
