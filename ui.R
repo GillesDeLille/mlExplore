@@ -14,13 +14,16 @@ dashboardPage(skin = 'green',
                     selectInput('cible', 'Cible', choices = c('Churn?')),
                     selectInput('modele','Modèle', choices = c('randomForest'))
                   ),
-                  # menuItem('Présentation des modèles','presentation'),
+                  menuItem('Présentation des modèles',tabName = 'presentation'),
                   menuItem("Modele", tabName = "mod")                
                 )
               ),
               dashboardBody(tabItems(
                 # ------------------------------------------------------------------------------------------------------------------------------------
-                # tabItem(tabName = "presentation", column(12, uiOutput('uiPresentation')))
+                tabItem(tabName = "presentation", 
+                  # column(12, uiOutput('uiPresentation'))
+                  includeMarkdown('ml_fiche1.Rmd')      
+                ),
                 tabItem(tabName = "mod",
                   column(12, uiOutput('uiMod'))
                   # img(src='figures/courbeGainCumulée.png')
