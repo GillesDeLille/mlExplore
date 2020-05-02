@@ -1,0 +1,18 @@
+---
+title: "Machine Learning - Fiche 1"
+author: "Gilles"
+date: "02/05/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Précision et Rappel
+
+
+Voir <https://fr.wikipedia.org/wiki/Pr%C3%A9cision_et_rappel>
+
+
