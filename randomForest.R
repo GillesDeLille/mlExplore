@@ -20,12 +20,14 @@ exemples=list(
 
 source_python('randomForest.py')
 res=rf(datas)
-res=list(modele=res[[1]], confusion=res[[2]], score=res[[3]], y_test=res[[4]], y_probas=res[[5]])
+res=list(modele=res[[1]], confusion=res[[2]], score=res[[3]], y_test=res[[4]], y_probas=res[[5]], precision=res[[6]], rappel=res[[7]])
 
 if(F){
   res$modele
   res$confusion
   res$score
+  res$precision
+  res$rappel
 }
 
 # ========================================================================================================================================
