@@ -8,6 +8,12 @@ from sklearn import ensemble
 import matplotlib.pyplot as plt
 import scikitplot as skplt
 
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
+# from sklearn.metrics import f1_score
+# from sklearn.metrics import make_scorer
+# from sklearn.model_selection import cross_validate
 def rf(datas):
   data=datas[0]
   target=datas[1]
@@ -19,9 +25,8 @@ def rf(datas):
   y_pred=clf.predict(X_test)
   confusion=pd.crosstab(y_test, y_pred, rownames=['Classes réelles'], colnames=['Classes prédites'])
   clfScore=clf.score(X_test,y_test)
-  # ----------------------------------------------------------------------------------------------------------------
-  y_probas=clf.predict_proba(X_test)
-  skplt.metrics.plot_cumulative_gain(y_test, y_probas, title='Courbe de gain cumulée - Churns',  title_fontsize='small')
+  precision_score(y_test, y_pred, average=None)
+  recall_score(y_test, y_pred, average=None)
   # plt.show()
   plt.savefig('figures/courbeGainCumulée')
   return (clf, confusion, clfScore, y_test, y_probas)
