@@ -10,6 +10,7 @@ shinyServer(function(input, output, session) {
     datas=prepare_datas(input$fichier,input$cible)
   })
   
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$uiMod <- renderUI({
     res=res()
     list(
@@ -23,6 +24,7 @@ shinyServer(function(input, output, session) {
     )
   })
   
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
   res <- reactive({
     # py_run_file('pretraitement_rf.py') ; py_run_file('randomForest.py') ; list(mc=py$confusion, score=py$clfScore)
     # source('randomForest.R')
@@ -39,9 +41,19 @@ shinyServer(function(input, output, session) {
     )
   })
   
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$imageGain <- renderImage({
     filename <- normalizePath(file.path('./figures', 'courbeGainCumulée.png'))
     list(src = filename, alt = 'Courbe de gain cumulée', height='250px')
   }, deleteFile = FALSE)
  
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  output$uiPresentation <- renderUI({
+    list(
+      h4(input$modele)
+      # includeMarkdown('ml_fiche1.Rmd')
+    )
+  })  
+  
+  
 })
