@@ -18,7 +18,9 @@ shinyServer(function(input, output, session) {
       h5(input$modele),
       box(width=4,
           column(12,h6(res$modele)),
-          column(12,h5(paste('Score :',res$score)))
+          column(12,h5(paste('Score     :',res$score))),
+          column(12,h5(paste('Précision :',round(res$precision*100,3),'%'))),
+          column(12,h5(paste('Rappel    :',round(res$rappel*100,3),'%')))
       ),
       column(width = 6, height = 1, plotOutput('imageGain'))
     )
@@ -30,7 +32,7 @@ shinyServer(function(input, output, session) {
     # source('randomForest.R')
     source_python(paste0(input$modele,'.py'))  # nom de la methode implémentée : "rf"    un nom générique comme "modele" sera peut être préférable !!!
     res=rf(datas())
-    res=list(modele=res[[1]], confusion=res[[2]], score=res[[3]], y_test=res[[4]], y_probas=res[[5]])
+    res=list(modele=res[[1]], confusion=res[[2]], score=res[[3]], y_test=res[[4]], y_probas=res[[5]], precision=res[[6]], rappel=res[[7]])
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------

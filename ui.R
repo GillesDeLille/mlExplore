@@ -8,8 +8,8 @@ dashboardPage(skin = 'green',
                 sidebarMenu(
                   id='menu',
                   getElement(tags, "div")(style = "font-size: 11px",
-                    selectInput('fichier','Fichier des exemples', choices = c('churn.csv')),
-                    selectInput('cible', 'Cible', choices = c('Churn?')),
+                    selectInput('fichier','Fichier des exemples', choices = c('churn2.csv')),
+                    selectInput('cible', 'Cible', choices = c('Churn')),
                     selectInput('modele','Modèle', choices = c('randomForest'))
                   ),
                   menuItem('Présentation des modèles',tabName = 'presentation'),

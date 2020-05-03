@@ -12,9 +12,9 @@ def prepare_datas(fichier,cible):
   # data.info()
   # data.head()
   target=data[cible]
-  if fichier=='churn.csv':
+  if fichier=='churn2.csv':
     data=data.join(pd.get_dummies(data['Int\'l Plan'], prefix='international'))
     data=data.join(pd.get_dummies(data['VMail Plan'], prefix='voicemail'))
-    to_drop=['Int\'l Plan', 'VMail Plan', 'State', 'Area Code', 'Phone', 'Churn?']
+    to_drop=['Int\'l Plan', 'VMail Plan', 'State', 'Area Code', 'Phone', 'Churn']
     data=data.drop(to_drop,axis=1)
   return (data,target)
