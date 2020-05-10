@@ -17,12 +17,15 @@ if(F){
 # py$confusion
 # py$clfScore
 
-source_python('pretraitement_rf.py')
+source_python('pretraitement.py')
 
 # fichier='churn.csv' ; cible='Churn?'
 fichier='churn2.csv' ; cible='Churn'
 
-datas=prepare_datas(fichier,cible)
+datas=prepare_datas(fichier,cible,
+                    dummies=c("Int'l Plan", 'VMail Plan'),
+                    prefixes=c('international', 'voicemail'),
+                    to_drop=c('State', 'Area Code', 'Phone'))
 exemples=list(
   data=datas[[1]] %>% as_tibble(),
   target=datas[[2]] %>% as_tibble()
@@ -40,31 +43,4 @@ if(F){
   res$rappel
 }
 
-# ========================================================================================================================================
-if(F){}
-library(microbenchmark)
-library(ggplot2)
-set.seed(2017)
-n <- 10000
-p <- 100
-X <- matrix(rnorm(n*p), n, p)
-y <- X %*% rnorm(p) + rnorm(100)
-
-check_for_equal_coefs <- function(values) {
-  tol <- 1e-12
-  max_error <- max(c(abs(values[[1]] - values[[2]]),
-                     abs(values[[2]] - values[[3]]),
-                     abs(values[[1]] - values[[3]])))
-  max_error < tol
-}
-
-mbm <- microbenchmark("lm" = { b <- lm(y ~ X + 0)$coef },
-                      "pseudoinverse" = { b <- solve(t(X) %*% X) %*% t(X) %*% y },
-                      "linear system" = { b <- solve(t(X) %*% X, t(X) %*% y) },
-                      check = check_for_equal_coefs
-)
-
-mbm
-autoplot(mbm)
-}
 # ========================================================================================================================================

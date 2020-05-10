@@ -1,13 +1,15 @@
 
-if(F){ fichier='churn.csv' ; cible='Churn?' }
-
 shinyServer(function(input, output, session) {
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   exemples <- reactive({ read.csv(paste0(pafdata,'exemples/',input$fichier), dec = ',') %>% as_tibble() })
   datas <- reactive({
     source_python('pretraitement_rf.py')
-    datas=prepare_datas(input$fichier,input$cible)
+    datas=prepare_datas(input$fichier,input$cible,
+                        dummies=c("Int'l Plan", 'VMail Plan'),
+                        prefixes=c('international', 'voicemail'),
+                        to_drop=c('State', 'Area Code', 'Phone')
+    )
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -15,8 +17,8 @@ shinyServer(function(input, output, session) {
     res=res()
     list(
       DT::dataTableOutput('datas'),
-      h5(input$modele),
-      box(width=4,
+      h4(input$modele),
+      box(width=5,
           column(12,h6(res$modele)),
           column(12,h5(paste('Score     :',res$score))),
           column(12,h5(paste('Précision :',round(res$precision*100,3),'%'))),
@@ -31,8 +33,14 @@ shinyServer(function(input, output, session) {
     # py_run_file('pretraitement_rf.py') ; py_run_file('randomForest.py') ; list(mc=py$confusion, score=py$clfScore)
     # source('randomForest.R')
     source_python(paste0(input$modele,'.py'))  # nom de la methode implémentée : "rf"    un nom générique comme "modele" sera peut être préférable !!!
-    res=rf(datas())
+    tic('total')
+    tic('pretraitement')
+    datas=datas()
+    toc()
+    res=rf(datas)
     res=list(modele=res[[1]], confusion=res[[2]], score=res[[3]], y_test=res[[4]], y_probas=res[[5]], precision=res[[6]], rappel=res[[7]])
+    toc()
+    res
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
