@@ -1,11 +1,11 @@
 
 import pandas as pd
 
-pafexemples='~/data/exemples/'
+# pafexemples='~/data/exemples/'
 # fichier='churn.csv'
 # cible='Churn?'
 
-def prepare_datas(fichier, cible, dummies=[], prefixes=[], to_drop=[]):
+def prepare_datas(fichier, cible, dummies=[], prefixes=[], to_drop=[], pafexemples='exemples/'):
   data=pd.read_csv(pafexemples+fichier)
   # data.info()
   # data.head()
