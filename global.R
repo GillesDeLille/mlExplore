@@ -2,6 +2,7 @@
 library(reticulate)
 library(dplyr)
 library(DT)
+llibrary(readr)
 
 library(tictoc)
 
