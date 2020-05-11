@@ -1,9 +1,19 @@
 
 shinyServer(function(input, output, session) {
   
+  output$uiFichiers <- renderUI({
+    # choix=dir('exemples')
+    choix=dir(input$dossier)
+    selectInput('fichier','Fichier de données', choices = choix)
+  })
+  
+  output$uiCible <- renderUI({
+    choix=colonnes()
+    sel=NULL ; if('Churn' %in% choix){ sel='Churn' }
+    selectInput('cible', 'Cible', choices = choix, selected = sel)
+  })
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
-  # exemples <- reactive({ read.csv(paste0(pafdata,'exemples/',input$fichier), dec = ',') %>% as_tibble() })
-  exemples <- reactive({ read_csv(paste0(pafdata,'exemples/',input$fichier), locale=locale(decimal_mark = ',', grouping_mark = ' ')) })
+  exemples <- reactive({ read_csv(paste0(input$dossier,'/',input$fichier), locale=locale(decimal_mark = ',', grouping_mark = ' ')) })
   # exemples <- reactive({
   #   xy=read.csv(paste0(pafdata,'exemples/',input$fichier), dec = ',') %>% as_tibble()
   #   noms=read_csv(paste0(pafdata,'exemples/',input$fichier)) %>% names()
@@ -11,15 +21,27 @@ shinyServer(function(input, output, session) {
   #   # save(xy, file='~/xy.rdata') ; load('~/xy.rdata') ; xy
   #   xy
   # })
+  
+  output$donneesBrutes <- DT::renderDataTable({
+    datatable(exemples(),
+              options = list(searching=T, paging=T, pageLength=100, scrollY=130, scrollX=800, info=F),
+              rownames=F, selection=c(mode='single')
+    )
+  })
+  output$uiBrutes <- renderUI({
+    DT::dataTableOutput('donneesBrutes')
+  })
   datas <- reactive({
     print(input$dummies)
     source_python('pretraitement.py')
-    datas=prepare_datas(input$fichier,input$cible,
-                        # dummies=c("Int'l Plan", 'VMail Plan'),
-                        # to_drop=c('State', 'Area Code', 'Phone')
-                        dummies=input$dummies,
-                        prefixes=c('international', 'voicemail'),
-                        to_drop=input$to_drop
+    datas=prepare_datas(
+      input$fichier,input$cible,
+      # dummies=c("Int'l Plan", 'VMail Plan'),
+      # to_drop=c('State', 'Area Code', 'Phone')
+      dummies=input$dummies,
+      prefixes=c('international', 'voicemail'),
+      to_drop=input$to_drop,
+      pafexemples=paste0(input$dossier,'/')
     )
   })
   
@@ -30,11 +52,12 @@ shinyServer(function(input, output, session) {
     selectInput('dummies','Dummies',choices = factors, multiple = T)
   })
   
- # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  colonnes <- reactive({ colonnes=exemples() %>% names() })
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$uiTo_drop <- renderUI({
     # factors=exemples() %>% Filter(f=is.factor) %>% names()
-    colonnes=exemples() %>% names()
-    selectInput('to_drop','colonnes à retirer',choices = colonnes, multiple = T)
+    selectInput('to_drop','colonnes à retirer',choices = colonnes(), multiple = T)
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -70,14 +93,19 @@ shinyServer(function(input, output, session) {
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$datas <- DT::renderDataTable({
-    datatable(exemples(),
-    # features=datas()[[1]]
-    # # colnames(features)=tolower(colnames(features))
+    # datatable(
+    #   exemples(),
+    #   options = list(searching=T, paging=T, pageLength=100, scrollY=130, scrollX=800, info=F),
+    #   rownames=F, selection=c(mode='single')
+    # )
+    features=datas()[[1]]
+    features=features %>% mutate_if(is.double, as.character)
     # features=features[,3:5]
-    # # save(features,file='~/features.rdata') ; load('~/features.rdata') ; features %>% as_tibble()
-    # datatable(features,
-              options = list(searching=T, paging=T, pageLength=100, scrollY=130, scrollX=800, info=F),
-              rownames=F, selection=c(mode='single')
+    # save(features,file='~/features.rdata') #; load('~/features.rdata') ; (features=features %>% as_tibble())
+    datatable(
+      features,
+      options = list(searching=T, paging=T, pageLength=100, scrollY=130, scrollX=800, info=F),
+      rownames=F, selection=c(mode='single')
     )
   })
   

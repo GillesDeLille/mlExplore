@@ -8,18 +8,25 @@ dashboardPage(skin = 'green',
                 sidebarMenu(
                   id='menu',
                   getElement(tags, "div")(style = "font-size: 11px",
-                    selectInput('fichier','Fichier des exemples', choices = c('churn2.csv')),
-                    selectInput('cible', 'Cible', choices = c('Churn')),
+                    textInput('dossier', 'Dossier', value = 'exemples'),
+                    uiOutput('uiFichiers'),
+                    uiOutput('uiCible'),
                     uiOutput('uiDummies'),
                     uiOutput('uiTo_drop'),
                     selectInput('modele','Modèle', choices = c('randomForest'))
                   ),
+                  menuItem('Données brutes',tabName = 'brutes'),
                   menuItem('Présentation des modèles',tabName = 'presentation'),
                   menuItem("Modele", tabName = "mod"),
                   menuItem('Eléments à avoir en tête',tabName = 'fiche1')
                 )
               ),
               dashboardBody(tabItems(
+                # ------------------------------------------------------------------------------------------------------------------------------------
+                tabItem(tabName = "brutes", withMathJax(
+                  setShadow(class = 'box'),
+                  box(width=12, uiOutput('uiBrutes'))
+                )),
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "presentation", withMathJax(
                   setShadow(class = 'box'),
