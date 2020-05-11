@@ -2,14 +2,39 @@
 shinyServer(function(input, output, session) {
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
-  exemples <- reactive({ read.csv(paste0(pafdata,'exemples/',input$fichier), dec = ',') %>% as_tibble() })
+  # exemples <- reactive({ read.csv(paste0(pafdata,'exemples/',input$fichier), dec = ',') %>% as_tibble() })
+  exemples <- reactive({ read_csv(paste0(pafdata,'exemples/',input$fichier), locale=locale(decimal_mark = ',', grouping_mark = ' ')) })
+  # exemples <- reactive({
+  #   xy=read.csv(paste0(pafdata,'exemples/',input$fichier), dec = ',') %>% as_tibble()
+  #   noms=read_csv(paste0(pafdata,'exemples/',input$fichier)) %>% names()
+  #   colnames(xy)=noms
+  #   # save(xy, file='~/xy.rdata') ; load('~/xy.rdata') ; xy
+  #   xy
+  # })
   datas <- reactive({
-    source_python('pretraitement_rf.py')
+    print(input$dummies)
+    source_python('pretraitement.py')
     datas=prepare_datas(input$fichier,input$cible,
-                        dummies=c("Int'l Plan", 'VMail Plan'),
+                        # dummies=c("Int'l Plan", 'VMail Plan'),
+                        # to_drop=c('State', 'Area Code', 'Phone')
+                        dummies=input$dummies,
                         prefixes=c('international', 'voicemail'),
-                        to_drop=c('State', 'Area Code', 'Phone')
+                        to_drop=input$to_drop
     )
+  })
+  
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  output$uiDummies <- renderUI({
+    # factors=exemples() %>% Filter(f=is.factor) %>% names()
+    factors=exemples() %>% Filter(f=is.character) %>% names()
+    selectInput('dummies','Dummies',choices = factors, multiple = T)
+  })
+  
+ # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  output$uiTo_drop <- renderUI({
+    # factors=exemples() %>% Filter(f=is.factor) %>% names()
+    colonnes=exemples() %>% names()
+    selectInput('to_drop','colonnes à retirer',choices = colonnes, multiple = T)
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -46,6 +71,11 @@ shinyServer(function(input, output, session) {
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$datas <- DT::renderDataTable({
     datatable(exemples(),
+    # features=datas()[[1]]
+    # # colnames(features)=tolower(colnames(features))
+    # features=features[,3:5]
+    # # save(features,file='~/features.rdata') ; load('~/features.rdata') ; features %>% as_tibble()
+    # datatable(features,
               options = list(searching=T, paging=T, pageLength=100, scrollY=130, scrollX=800, info=F),
               rownames=F, selection=c(mode='single')
     )

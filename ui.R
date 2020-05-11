@@ -10,6 +10,8 @@ dashboardPage(skin = 'green',
                   getElement(tags, "div")(style = "font-size: 11px",
                     selectInput('fichier','Fichier des exemples', choices = c('churn2.csv')),
                     selectInput('cible', 'Cible', choices = c('Churn')),
+                    uiOutput('uiDummies'),
+                    uiOutput('uiTo_drop'),
                     selectInput('modele','Modèle', choices = c('randomForest'))
                   ),
                   menuItem('Présentation des modèles',tabName = 'presentation'),
