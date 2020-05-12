@@ -1,5 +1,5 @@
 
-largeurBandeau=300
+largeurBandeau=350
 
 dashboardPage(skin = 'green',
               dashboardHeader(title = "Machine Learning", titleWidth=largeurBandeau),
@@ -8,14 +8,13 @@ dashboardPage(skin = 'green',
                 sidebarMenu(
                   id='menu',
                   getElement(tags, "div")(style = "font-size: 11px",
-                    textInput('dossier', 'Dossier', value = 'exemples'),
-                    uiOutput('uiFichiers'),
-                    uiOutput('uiCible'),
-                    uiOutput('uiDummies'),
-                    uiOutput('uiTo_drop'),
-                    selectInput('modele','Modèle', choices = c('randomForest'))
+                    column(6, textInput('dossier', 'Dossier', value = 'exemples')), column(6,uiOutput('uiFichiers')),
+                    column(12,uiOutput('uiTarget')),
+                    column(12,uiOutput('uiDummies')),
+                    column(12,uiOutput('uiTo_drop')),
+                    uiOutput('uiModeles')
                   ),
-                  menuItem('Données brutes',tabName = 'brutes'),
+                  menuItem('Données',tabName = 'donnees'),
                   menuItem('Présentation des modèles',tabName = 'presentation'),
                   menuItem("Modele", tabName = "mod"),
                   menuItem('Eléments à avoir en tête',tabName = 'fiche1')
@@ -23,9 +22,9 @@ dashboardPage(skin = 'green',
               ),
               dashboardBody(tabItems(
                 # ------------------------------------------------------------------------------------------------------------------------------------
-                tabItem(tabName = "brutes", withMathJax(
+                tabItem(tabName = "donnees", withMathJax(
                   setShadow(class = 'box'),
-                  box(width=12, uiOutput('uiBrutes'))
+                  uiOutput('uiDonnees')
                 )),
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "presentation", withMathJax(
