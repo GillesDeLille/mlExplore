@@ -14,4 +14,4 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Projet ML
 
-Permet aux utilisateurs de sélectionner des algorithmes compatibles avec les données.
+Permet aux utilisateurs de sélectionner des algorithmes compatibles avec leurs données.
