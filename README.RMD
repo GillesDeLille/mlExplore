@@ -1,0 +1,17 @@
+---
+title: "ML"
+author: "Gilles"
+date: "11/05/2020"
+output: 
+  md_document:
+    variant: markdown_github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### Projet ML
+
+Permet aux utilisateurs de sélectionner des algorithmes compatibles avec les données.
