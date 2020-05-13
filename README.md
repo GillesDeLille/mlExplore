@@ -132,11 +132,11 @@ src\_python/ . Cela m’active l’affichage et tout fonctionne alors à
 merveilles. C’est de la bidouille, conseillez moi vite un truc plus pro
 si vous savez et avez du temps à consacrer à ça !
 
-Et quoi ça ressemble en images ?
---------------------------------
+Et à quoi ça ressemble en images ?
+----------------------------------
 
 Vous demander de commencer par corriger les bugs, c’est pas très vendeur
-je reconnaît (…mais vous l’ai-je vraiment demandé ?)
+je reconnaît.
 
 Plus vendeur, une image :
 
