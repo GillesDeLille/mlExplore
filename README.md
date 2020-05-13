@@ -11,7 +11,8 @@ De quoi s’agit-il vraiment ?
 
 ### Outil pédagogique
 
-Tout l’intérêt de ne se résume pas au produit fini :
+Tout l’intérêt du projet ne se résume pas au produit final et
+certainement pas à ses capacités de calcul :
 
 Des outils graphiques pour gérer des problèmes ML, il en existe déjà
 beaucoup
@@ -29,8 +30,8 @@ Il apporte plutôt une dimension pédagogique en présentant aux
 
 -   des algorithmes,
 -   des modèles,
--   un concentré d’éléments de connaissances relatives au ML, adapté à
-    *eux* puisque enrichi par *eux*.
+-   un concentré d’éléments de connaissances relatives au ML, adapté *à
+    eux* puisque enrichi *par eux*.
 
 Mais l’intérêt pédagogique de ne se résume pas au produit fini.
 
