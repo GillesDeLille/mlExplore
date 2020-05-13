@@ -77,6 +77,15 @@ Bibliothèques
 -   scikitlearn
 -   panda
 
-### Que faire de plus ?
+Que faire de plus ?
+-------------------
 
 **La liste va être longue…**
+
+On peut commencer par…
+
+### Corriger les bugs
+
+1.  tous les fichiers utilisateurs .csv ne sont pas bien pris en compte
+
+2.
