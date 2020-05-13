@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-## Objectif naïf du Projet mlExplore
+## Objectif naïf du projet mlExplore
 
 Permettre aux utilisateurs de sélectionner des algorithmes compatibles avec leurs données.
 
