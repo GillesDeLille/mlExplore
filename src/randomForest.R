@@ -17,21 +17,20 @@ if(F){
 # py$confusion
 # py$clfScore
 
-source_python('pretraitement.py')
+source_python('src_python/pretraitement.py')
 
 # fichier='churn.csv' ; cible='Churn?'
 fichier='churn2.csv' ; cible='Churn'
 
 datas=prepare_datas(fichier,cible,
                     dummies=c("Int'l Plan", 'VMail Plan'),
-                    prefixes=c('international', 'voicemail'),
                     to_drop=c('State', 'Area Code', 'Phone'))
 exemples=list(
   data=datas[[1]] %>% as_tibble(),
   target=datas[[2]] %>% as_tibble()
 )
 
-source_python('randomForest.py')
+source_python('src_python/randomForest.py')
 res=rf(datas, cible)
 res=list(modele=res[[1]], confusion=res[[2]], score=res[[3]], y_test=res[[4]], y_probas=res[[5]], precision=res[[6]], rappel=res[[7]])
 

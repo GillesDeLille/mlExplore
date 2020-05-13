@@ -62,7 +62,7 @@ shinyServer(function(input, output, session) {
       need(!is.null(input$fichier), 'Choisir un fichier'),
       need(!is.null(input$target), 'Choisir une target')
     )
-    source_python('pretraitement.py')
+    source_python('src_python/pretraitement.py')
     toDrop='' ; if(!is.null(input$to_drop)){ toDrop=input$to_drop }
     dummies='' ; if(!is.null(input$dummies)){ dummies=input$dummies }
     datas=prepare_datas(
@@ -90,7 +90,7 @@ shinyServer(function(input, output, session) {
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   res <- reactive({
-    source_python(paste0(input$modele,'.py'))  # nom de la methode implémentée : "rf"    un nom générique comme "modele" sera peut être préférable !!!
+    source_python(paste0('src_python/',input$modele,'.py'))  # nom de la methode implémentée : "rf"    un nom générique comme "modele" sera peut être préférable !!!
     tic('total')
     tic('pretraitement')
     datas=datas()
@@ -121,7 +121,7 @@ shinyServer(function(input, output, session) {
   output$uiPresentation <- renderUI({
     list(
       h4(input$modele)
-      # includeMarkdown('ml_fiche1.Rmd')
+      # includeMarkdown(paste0(input$modele,'.Rmd'))
     )
   })  
   
