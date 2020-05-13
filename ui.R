@@ -38,7 +38,7 @@ dashboardPage(skin = 'green',
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "fiche1", withMathJax(
                   setShadow(class = 'box'),
-                  column(2,br()),box(width=8, includeMarkdown('ml_fiche1.Rmd'))
+                  column(2,br()),box(width=8, includeMarkdown('markdown/ml_fiche1.Rmd'))
                 ))
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 
