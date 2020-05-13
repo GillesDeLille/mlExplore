@@ -136,8 +136,8 @@ Et quoi ça ressemble en images ?
 --------------------------------
 
 Vous demander de commencer par corriger les bugs, c’est pas très vendeur
-je reconnaît (…mais vous l’ai-je vraiment demandé)
+je reconnaît (…mais vous l’ai-je vraiment demandé ?)
 
 Plus vendeur, une image :
 
-![Sortie d’un modèle célèbre](../figures/mlExplore.png)
+![Sortie d’un modèle célèbre](mlExplore.png)
