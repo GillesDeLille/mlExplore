@@ -16,7 +16,7 @@ dashboardPage(skin = 'green',
                   ),
                   menuItem('Données',tabName = 'donnees'),
                   menuItem('Présentation des modèles',tabName = 'presentation'),
-                  menuItem("Modele", tabName = "mod"),
+                  menuItem("Résultats", tabName = "resultats"),
                   menuItem('Eléments à avoir en tête',tabName = 'fiche1')
                 )
               ),
@@ -31,8 +31,8 @@ dashboardPage(skin = 'green',
                   uiOutput('uiPresentation')
                 )),
                 # ------------------------------------------------------------------------------------------------------------------------------------
-                tabItem(tabName = "mod",
-                  column(12, uiOutput('uiMod'))
+                tabItem(tabName = "resultats",
+                  column(12, uiOutput('uiResultats'))
                 ),
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "fiche1", withMathJax(

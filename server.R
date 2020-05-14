@@ -44,19 +44,32 @@ shinyServer(function(input, output, session) {
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$uiDonnees <- renderUI({
     list(
+      h5('Données disponibles'),
       box(width=12,DT::dataTableOutput('donneesDisponibles')),
+      h5('Features prétraitées'),
       box(width=12,DT::dataTableOutput('features'))
     )
   })
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$donneesDisponibles <- DT::renderDataTable({
     datatable(
-      donnees(), caption = 'Données disponibles',
+      donnees(), #caption = 'Données disponibles',
       options = list(searching=T, paging=T, pageLength=100, scrollY=130, scrollX=800, info=F),
       rownames=F, selection=c(mode='single')
     )
   })
 
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  output$features <- DT::renderDataTable({
+    if(formatData()=='liste_ft') features=datas()[[1]] %>% mutate_if(is.double, as.character)
+    if(formatData()=='tibble')  features=datas() %>% select(-input$target) %>% mutate_if(is.double, as.character)
+    datatable(
+      features, # caption = 'Features',
+      options = list(searching=T, paging=T, pageLength=100, scrollY=100, scrollX=800, info=F),
+      rownames=F, selection=c(mode='single')
+    )
+  })
+  
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   formatData <- reactive({
     # Pour laisser un maximum de champs libre aux différentes implémentations, 
@@ -75,10 +88,8 @@ shinyServer(function(input, output, session) {
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   datas <- reactive({
-    
     if(formatData()=='liste_ft') datas=pyth_datas()   # Le langage choisi ici
-    if(formatData()=='tibble')   datas=r_datas()      # n'a pas d'importance...
-    
+    if(formatData()=='tibble')   datas=r_datas()      # importe peu...
     datas
   })
   
@@ -131,67 +142,77 @@ shinyServer(function(input, output, session) {
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
-  output$uiMod <- renderUI({
-    res=res()
-    # save(res, file='~/res.rdata') #; load('~/res.rdata') ; res
+  output$uiResultats <- renderUI({
+    mf    = modeleFitted()$mf
+    temps = modeleFitted()$temps
+    
     print('=================================')
-    print(paste('Score            :',res$score))
-    print(paste('precision        :',res$precision))
-    print(paste('rappel           :',res$rappel))
-    print(paste('prediction.error :',res$prediction.error))
+    print(paste('Score            :',mf$score))
+    print(paste('precision        :',mf$precision))
+    print(paste('rappel           :',mf$rappel))
+    print(paste('prediction.error :',mf$prediction.error))
     print('=================================')
     
     resultats <- list(
-      column(12,h5(paste('Score               :',res$score))),
-      column(12,h5(paste('Précision           :',round(res$precision*100,3),'%'))),
-      column(12,h5(paste('Rappel              :',round(res$rappel*100,3),'%'))),
-      column(12,h5(paste('prediction.error    :',round(res$prediction.error*100,3),'%')))
+      column(12,h5(paste('Score               :',mf$score))),
+      column(12,h5(paste('Précision           :',round(mf$precision*100,3),'%'))),
+      column(12,h5(paste('Rappel              :',round(mf$rappel*100,3),'%'))),
+      column(12,h5(paste('prediction.error    :',round(mf$prediction.error*100,3),'%'))),
+      column(6,h6(temps[1])),column(5,h6(temps[2]))
     )
 
     list(
       h4(input$modele),
-      box(width=5,
-          column(12,h6(res$modele)),
-          resultats
+      box(
+        width=6,
+        column(12,h6(mf$modele)),
+        resultats
       ),
       column(width = 6, height = 1, plotOutput('imageGain'))
     )
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
-  res <- reactive({
+  modeleFitted <- reactive({
+    validate( need(!is.null(input$implementation),'Choisir une implémentation du modèle dans la section "Présentation des modèles"') )
+    
     if(str_detect(input$implementation, 'scikitlearn')){
       source_python(paste0('src_python/',input$modele,'.py'))  # nom de la methode implémentée : skl()
     }
+    
+    tic.clearlog()
     tic('total')
     tic('pretraitement')
     datas=datas()
-    toc()
+    toc(log = T)
     
     if(str_detect(input$implementation,'scikitlearn')){
-      res=skl(datas)
-      res=list(modele=res[[1]], confusion=res[[2]], score=res[[3]], y_test=res[[4]], y_probas=res[[5]], precision=res[[6]], rappel=res[[7]])
+      modeleFitted=skl(datas)
+      # On appréciera que les prochaines implémentations suivent l'exemple de cette sortie,
+      # pour faciliter l'intégration des résultats complets dans la section ...résultats
+      modeleFitted=list(
+        modele      = modeleFitted[[1]], 
+        confusion   = modeleFitted[[2]], 
+        score       = modeleFitted[[3]], 
+        y_test      = modeleFitted[[4]], 
+        y_probas    = modeleFitted[[5]], 
+        precision   = modeleFitted[[6]], 
+        rappel      = modeleFitted[[7]]
+      )
     }
     if(input$implementation=='R/ranger'){
       data=datas()
       # save(data, file='~/data.rdata') #; load('~/data.rdata'); data
       require(ranger)
-      res=ranger(Churn ~ ., data=data)
+      modeleFitted <- ranger(as.formula(paste(input$target,'~ .')), data=data)
+      # //
+      # TO DO
+      # "ranger" un maximum de résultats sous la même forme que pour la sortie de skl (avez-vous vu le jeu de mot ?)
+      # //
     }
 
-    toc()
-    res
-  })
-  
-  # ---------------------------------------------------------------------------------------------------------------------------------------------------
-  output$features <- DT::renderDataTable({
-    if(formatData()=='liste_ft') features=datas()[[1]] %>% mutate_if(is.double, as.character)
-    if(formatData()=='tibble')  features=datas() %>% select(-input$target) %>% mutate_if(is.double, as.character)
-    datatable(
-      features, caption = 'Features',
-      options = list(searching=T, paging=T, pageLength=100, scrollY=100, scrollX=800, info=F),
-      rownames=F, selection=c(mode='single')
-    )
+    toc(log = T)
+    list(mf=modeleFitted, temps=tic.log())
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
