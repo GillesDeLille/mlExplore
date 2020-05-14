@@ -14,7 +14,9 @@ from sklearn.metrics import recall_score
 # from sklearn.metrics import f1_score
 # from sklearn.metrics import make_scorer
 # from sklearn.model_selection import cross_validate
-def rf(datas, cible='cible'):
+
+# fonction skl : traitement avec la bibliotthèque scikitlearn
+def skl(datas, cible='cible'):
   data=datas[0]
   target=datas[1]
   X_train, X_test, y_train, y_test = train_test_split(data, target, test_size=0.2, random_state=12)

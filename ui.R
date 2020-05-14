@@ -28,8 +28,7 @@ dashboardPage(skin = 'green',
                 )),
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "presentation", withMathJax(
-                  setShadow(class = 'box'),
-                  column(2,br()),box(width=8, uiOutput('uiPresentation') )
+                  uiOutput('uiPresentation')
                 )),
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "mod",
