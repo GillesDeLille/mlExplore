@@ -117,6 +117,12 @@ shinyServer(function(input, output, session) {
     )
   })
   
+  
+  # --------------------------------------------------------------------------------
+  regulariserNomsColonnes <- function(noms){
+    str_replace_all(string = noms, pattern = " |'", replacement = '.')
+  }
+  
   # --------------------------------------------------------------------------------
   # Pretraitement des données par R (je m'applique ici à fournir les données au bon format pour ranger)
   # Renvoie un tibble contenant features et target
@@ -132,21 +138,23 @@ shinyServer(function(input, output, session) {
     print('=> tibble (features, target)')
     print('====================================')
     
-    toDrop='' ; if(!is.null(input$to_drop)){ toDrop=input$to_drop }
-    dummies='' ; if(!is.null(input$dummies)){ dummies=input$dummies }
-
-    donnees=read_csv(paste0(input$dossier,'/',input$fichier))
-    names(donnees)=str_replace(string = names(donnees), pattern = ' ', replacement = '.')
-    names(donnees)=str_replace(string = names(donnees), pattern = "'", replacement = '_')
+    dummies='' ; if(!is.null(input$dummies)){ dummies <- input$dummies %>% regulariserNomsColonnes() }
+    toDrop='' ; if(!is.null(input$to_drop)){ toDrop <- input$to_drop %>% regulariserNomsColonnes() }
+    
+    donnees=read.csv(paste0(input$dossier,'/',input$fichier)) %>% as.data.table()
+    donnees <- donnees %>% select(-toDrop)
+    donnees <- one_hot(donnees, dummies)
+    
     donnees
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$uiResultats <- renderUI({
-    mf    = modeleFitted()$mf
-    temps = modeleFitted()$temps
+    mf    <- modeleFitted()$mf
+    temps <- modeleFitted()$temps
     
     print('=================================')
+    print(input$implementation)
     print(paste('Score            :',mf$score))
     print(paste('precision        :',mf$precision))
     print(paste('rappel           :',mf$rappel))
@@ -154,6 +162,7 @@ shinyServer(function(input, output, session) {
     print('=================================')
     
     resultats <- list(
+      column(12,h4(input$implementation)),
       column(12,h5(paste('Score               :',mf$score))),
       column(12,h5(paste('Précision           :',round(mf$precision*100,3),'%'))),
       column(12,h5(paste('Rappel              :',round(mf$rappel*100,3),'%'))),

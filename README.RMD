@@ -79,7 +79,8 @@ Une interface permettant de choisir nos propres fichiers pour les soumettre au M
 
 Un premier modèle est proposé : **Random Forest**, avec une implémentation **Python/scikit-learn**
 
-et une autre avec **R** associé au costaud **ranger**
+et une autre avec **R** associé au costaud **ranger** ...Juste une remarque en passant, je ne suis pas encore copain avec lui
+et il a l'air suceptible question paramétrage. Je vais donc prendre mon temps...
 
 
 
@@ -98,7 +99,7 @@ Environnement de dev
 Bibliothèques
 
 - scikitlearn
-- panda
+- pandas
 
 
 ## Que faire de plus ?
@@ -129,14 +130,44 @@ Pré-requis :
 peut aider dans global.R
 2) Un certain nombre de librairies sont bien sûr nécessaires
 
-Pour les scripts python d'une part :
+Pour les scripts R d'une part :
+
+- reticulate (pour articuler R et Python)
+- DT (pour afficher efficacement les tableaux de données)
+- dplyr (pour les manipuler)
+- readr (pour lire les fichiers csv, mais là je ne suis pas de très bon conseil)
+- stringr (je l'utilise pour remettre dans le rang les noms de colonnes contenant des charactères exotiques)
+- tictoc (pour mesurer les temps d'exécution, elle est tip top !)
+- shinyEffects (pour faire joli)
+- shinydashboard (parce que c'est beau)
+- data.table (Spyrales en a parlé, alors...)
+- mltools (bien pratique)
+
+- ranger : le petit dernier pour faire du randomForest efficace sous R, alternativement à scikitlearn qui s'avèrera là-dessus moins bon. A confirmer.
+
+Les commandes à passer, dans une console R :
+
+```{}
+install.packages('reticulate')
+install.packages('tictoc')
+install.packages('shinyEffects')
+install.packages('shinydashboard')
+install.packages('DT')
+install.packages('dplyr')
+install.packages('readr')
+install.packages('mltools')
+install.packages('data.table')
+install.packages('ranger')
+```
+
+Pour les scripts python d'autre part :
 
 - pandas
 - scikit-learn`
 
 Mais tant qu'on y est, on peut installer aussi d'autres librairies qui seront utiles rapidement.
 
-Dans une console R, j'ai fait comme ceci :
+Toujours sous R, j'ai fait comme ceci :
 
 ```{}
 library(reticulate)
@@ -149,32 +180,6 @@ conda_install("r-reticulate", "scikit-plot")
 conda_install("r-reticulate", "seaborn")
 ```
 
-Pour les scripts R d'autres part :
-
-- reticulate (pour articuler R et Python)
-- DT (pour afficher efficacement les tableaux de données)
-- dplyr (pour les manipuler)
-- readr (pour lire les fichiers csv, mais là je ne suis pas de très bon conseil)
-- stringr (je l'utilise pour remettre dans le rang les noms de colonnes contenant des charactères exotiques)
-- tictoc (pour mesurer les temps d'exécution, elle est tip top !)
-- shinyEffects (pour faire joli)
-- shinydashboard (parce que c'est beau)
-
-- ranger : le petit dernier pour faire du randomForest efficace sous R, alternativement à scikitlearn qui s'avèrera là-dessus moins bon. A confirmer.
-
-Les commandes à passer, toujours sous R :
-
-```{}
-install.packages('reticulate')
-install.packages('tictoc')
-install.packages('shinyEffects')
-install.packages('shinydashboard')
-install.packages('DT')
-install.packages('dplyr')
-install.packages('readr')
-install.packages('ranger')
-
-```
 
 Après avoir récupéré tout le paquet (avec l'outil git à priori), je vois 2 options :
 
@@ -194,9 +199,10 @@ Je suis dans le cas de l'option 2
 
  - pour mon pc perso, tout fonctionne parfaitement.
  
- - et puis aussi sur une machine bien plus puissante ...qui n'est pas à moi et à laquelle j'accède par ssh.
+ - et puis aussi sur une machine bien plus puissante ...qui n'est pas à moi et à laquelle j'accède par ssh et Rstudio server.
 
-Il se trouve que l'affichage du DISPLAY sur la machine distante est un peu rebel. Pour franchir l'obstacle, je n'ai rien trouvé de mieux que de lancer le petit script python **plot.py** que vous trouverez dans src_python/ . Cela m'active l'affichage et tout fonctionne alors à merveilles. C'est de la bidouille, conseillez moi vite un truc plus pro si vous savez et avez du temps à consacrer à ça !
+Il se trouve que l'affichage du *DISPLAY* sur ma machine distante est un peu rebel. Vous n'aurez sans doute pas le soucis chez vous, ignorez alors la remarque qui suit.  
+Pour forcer le *DISPLAY*, je n'ai rien trouvé de mieux que de lancer le petit script python **plot.py** que vous trouverez dans src_python/ . Cela m'active l'affichage et tout fonctionne alors à merveilles. C'est de la bidouille, conseillez moi vite un truc plus pro si vous savez et avez du temps à consacrer à ça !
 
 
 ## Et à quoi ça ressemble en images ?
