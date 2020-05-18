@@ -9,8 +9,9 @@ shinyServer(function(input, output, session) {
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$uiTarget <- renderUI({
-    sel=NULL ; if('Churn' %in% colonnes()){ sel='Churn' }
-    selectInput('target', 'Target', choices = colonnes(), selected = sel)
+    colonnes=donnees() %>% names()
+    sel=NULL ; if('Churn' %in% colonnes){ sel='Churn' }
+    selectInput('target', 'Target', choices = colonnes, selected = sel)
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -23,8 +24,9 @@ shinyServer(function(input, output, session) {
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$uiTo_drop <- renderUI({
-    sel=NULL ; if(length(setdiff(c('State', 'Area Code', 'Phone'),colonnes()))==0){ sel=c('State', 'Area Code', 'Phone') }
-    selectInput('to_drop','colonnes à retirer',choices = colonnes(), selected = sel, multiple = T)
+    colonnes=donnees() %>% names()
+    sel=NULL ; if(length(setdiff(c('State', 'Area Code', 'Phone'),colonnes))==0){ sel=c('State', 'Area Code', 'Phone') }
+    selectInput('to_drop','colonnes à retirer',choices = colonnes, selected = sel, multiple = T)
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -35,25 +37,14 @@ shinyServer(function(input, output, session) {
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   donnees <- reactive({
     validate( need(!is.null(input$fichier), 'Choisir un fichier') )
-    
-    read_csv(paste0(input$dossier,'/',input$fichier), locale=locale(decimal_mark = ',', grouping_mark = ' '))
+    fread(paste0(input$dossier,'/',input$fichier))
   })
-  # ---------------------------------------------------------------------------------------------------------------------------------------------------
-  colonnes <- reactive({ colonnes=donnees() %>% names() })
-  
-  # ---------------------------------------------------------------------------------------------------------------------------------------------------
-  output$uiDonnees <- renderUI({
-    list(
-      h5('Données disponibles'),
-      box(width=12,DT::dataTableOutput('donneesDisponibles')),
-      h5('Features prétraitées'),
-      box(width=12,DT::dataTableOutput('features'))
-    )
-  })
+
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$donneesDisponibles <- DT::renderDataTable({
+    donnees <- donnees() %>% mutate_if(is.double, as.character)
     datatable(
-      donnees(), #caption = 'Données disponibles',
+      donnees, #caption = 'Données disponibles',
       options = list(searching=T, paging=T, pageLength=100, scrollY=130, scrollX=800, info=F),
       rownames=F, selection=c(mode='single')
     )
@@ -61,8 +52,9 @@ shinyServer(function(input, output, session) {
 
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$features <- DT::renderDataTable({
+    # dplyr !!! je ne sais pas m'en passer...
     if(formatData()=='liste_ft') features=datas()[[1]] %>% mutate_if(is.double, as.character)
-    if(formatData()=='tibble')  features=datas() %>% select(-input$target) %>% mutate_if(is.double, as.character)
+    if(formatData()=='tibble')  features=datas()       %>% select(-input$target) %>% mutate_if(is.double, as.character)
     datatable(
       features, # caption = 'Features',
       options = list(searching=T, paging=T, pageLength=100, scrollY=100, scrollX=800, info=F),
@@ -128,23 +120,16 @@ shinyServer(function(input, output, session) {
   # Renvoie un tibble contenant features et target
   # Avec un bon format pour les noms de colonnes
   r_datas <- reactive({
-    validate(
-      need(!is.null(input$fichier), 'Choisir un fichier'),
-      need(!is.null(input$target), 'Choisir une target')
-    )
+    validate( need(!is.null(input$target), 'Choisir une target') )
     
     print('====================================')
     print('Prétraitement des données avec dplyr')
     print('=> tibble (features, target)')
     print('====================================')
     
-    dummies='' ; if(!is.null(input$dummies)){ dummies <- input$dummies %>% regulariserNomsColonnes() }
-    toDrop='' ; if(!is.null(input$to_drop)){ toDrop <- input$to_drop %>% regulariserNomsColonnes() }
-    
-    donnees=read.csv(paste0(input$dossier,'/',input$fichier)) %>% as.data.table()
-    donnees <- donnees %>% select(-toDrop)
-    donnees <- one_hot(donnees, dummies)
-    
+    donnees=fread(paste0(input$dossier,'/',input$fichier), drop = input$to_drop, stringsAsFactors = T)
+    names(donnees)=regulariserNomsColonnes(names(donnees))
+    if(!is.null(input$dummies)) donnees <- one_hot(donnees, input$dummies %>% regulariserNomsColonnes())
     donnees
   })
   

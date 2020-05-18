@@ -24,7 +24,11 @@ dashboardPage(skin = 'green',
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "donnees", withMathJax(
                   setShadow(class = 'box'),
-                  uiOutput('uiDonnees')
+                  h5('Données disponibles'),
+                  box(width=12,DT::dataTableOutput('donneesDisponibles')),
+                  h5('Features prétraitées'),
+                  box(width=12,DT::dataTableOutput('features'))
+                  
                 )),
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "presentation", withMathJax(
