@@ -2,9 +2,26 @@
 shinyServer(function(input, output, session) {
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  observe({
+    if(!is.null(input$infile)){
+      data=fread(input$infile$datapath)
+      fwrite(data, file=paste0(pafdata,'/',input$infile$name))
+      updateSelectInput(session,'dossier', selected = 'data')
+      updateSelectInput(session,'target', selected = NULL)
+      updateSelectInput(session,'implementation', selected = NULL)
+    }
+  })
+  
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  observe({
+    input$fichier
+    updateSelectInput(session,'target', selected = NULL)
+  })
+  
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$uiFichiers <- renderUI({
     choix=dir(input$dossier)
-    selectInput('fichier','Fichier de données', choices = choix)
+    selectInput('fichier','Fichier de données', choices = choix, selected = input$fichier)
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -16,7 +33,6 @@ shinyServer(function(input, output, session) {
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$uiDummies <- renderUI({
-    # factors=exemples() %>% Filter(f=is.factor) %>% names()
     factors=donnees() %>% Filter(f=is.character) %>% names()
     sel=NULL ; if(length(setdiff(c("Int'l Plan", 'VMail Plan'),factors))==0){ sel=c("Int'l Plan", 'VMail Plan') }
     selectInput('dummies','Dummies',choices = factors, selected = sel, multiple = T)
@@ -36,8 +52,13 @@ shinyServer(function(input, output, session) {
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   donnees <- reactive({
-    validate( need(!is.null(input$fichier), 'Choisir un fichier') )
-    fread(paste0(input$dossier,'/',input$fichier))
+    # validate( need(!is.null(input$fichier), '...') )
+    fichier=paste0(input$dossier,'/',input$fichier)
+    validate(
+      need(!is.null(input$fichier), 'Choisir un fichier'),
+      need(file.exists(fichier), '...')
+    )
+      fread(fichier)
   })
 
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -52,9 +73,10 @@ shinyServer(function(input, output, session) {
 
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$features <- DT::renderDataTable({
+    
     # dplyr !!! je ne sais pas m'en passer...
-    if(formatData()=='liste_ft') features=datas()[[1]] %>% mutate_if(is.double, as.character)
-    if(formatData()=='tibble')  features=datas()       %>% select(-input$target) %>% mutate_if(is.double, as.character)
+    if(formatDonnees()=='liste_ft') features=datas()[[1]] %>% mutate_if(is.double, as.character)
+    if(formatDonnees()=='tibble')  features=datas()       %>% select(-input$target) %>% mutate_if(is.double, as.character)
     datatable(
       features, # caption = 'Features',
       options = list(searching=T, paging=T, pageLength=100, scrollY=100, scrollX=800, info=F),
@@ -63,25 +85,26 @@ shinyServer(function(input, output, session) {
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
-  formatData <- reactive({
+  formatDonnees <- reactive({
     # Pour laisser un maximum de champs libre aux différentes implémentations, 
     # on participe ici même au prétraitement des données
     
-    validate( need(!is.null(input$implementation),'Choisir une implementation du modèle dans la section "Présentation des modèles" ') )
+    # validate( need(!is.null(input$implementation),'Choisir une implementation du modèle dans la section "Présentation des modèles" ') )
+    validate( need(input$implementation!='','Choisir une implementation du modèle dans la section "Présentation des modèles" ') )
     
-    formatListe=c('scikitlearn/randomForest') # implémentation acceptant les données sous fomre de liste (features, target)
+    formatListe=c('scikitlearn/randomForest') # implémentation acceptant les données sous forme de liste (features, target)
     formatTibble=c('R/ranger')  # implémentation acceptant les données sous forme d'un tibble en entrée
     # D'autres suggestions ?
 
-    if(input$implementation %in% formatListe) formatData='liste_ft'
-    if(input$implementation %in% formatTibble) formatData='tibble'
-    formatData
+    if(input$implementation %in% formatListe) formatDonnees='liste_ft'
+    if(input$implementation %in% formatTibble) formatDonnees='tibble'
+    formatDonnees
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   datas <- reactive({
-    if(formatData()=='liste_ft') datas=pyth_datas()   # Le langage choisi ici
-    if(formatData()=='tibble')   datas=r_datas()      # importe peu...
+    if(formatDonnees()=='liste_ft') datas=pyth_datas()   # Le langage choisi ici
+    if(formatDonnees()=='tibble')   datas=r_datas()      # importe peu...
     datas
   })
   
@@ -89,9 +112,11 @@ shinyServer(function(input, output, session) {
   # Pretraitement des données par python
   # Renvoie une liste (features, target)
   pyth_datas <- reactive({
+    fichier=paste0(input$dossier,'/',input$fichier)
     validate(
       need(!is.null(input$fichier), 'Choisir un fichier'),
-      need(!is.null(input$target), 'Choisir une target')
+      need(!is.null(input$target), 'Choisir une target'),
+      need(file.exists(fichier), '...')
     )
     print('====================================')
     print('Prétraitement des données avec panda')
@@ -102,7 +127,8 @@ shinyServer(function(input, output, session) {
     toDrop='' ; if(!is.null(input$to_drop)){ toDrop=input$to_drop }
     dummies='' ; if(!is.null(input$dummies)){ dummies=input$dummies }
     datas=prepare_datas(
-      input$fichier,input$target,
+      input$fichier,
+      input$target,
       dummies=dummies,
       to_drop=toDrop,
       pafexemples=paste0(input$dossier,'/')
@@ -126,8 +152,11 @@ shinyServer(function(input, output, session) {
     print('Prétraitement des données avec dplyr')
     print('=> tibble (features, target)')
     print('====================================')
-    
-    donnees=fread(paste0(input$dossier,'/',input$fichier), drop = input$to_drop, stringsAsFactors = T)
+    if(!is.null(input$infile)){
+      donnees=fread(input$infile$datapath, drop = input$to_drop, stringsAsFactors = T)
+    }else{
+      donnees=fread(paste0(input$dossier,'/',input$fichier), drop = input$to_drop, stringsAsFactors = T)
+    }
     names(donnees)=regulariserNomsColonnes(names(donnees))
     if(!is.null(input$dummies)) donnees <- one_hot(donnees, input$dummies %>% regulariserNomsColonnes())
     donnees
@@ -135,6 +164,10 @@ shinyServer(function(input, output, session) {
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$uiResultats <- renderUI({
+    validate(
+      need(!is.null(input$implementation), 'Choisir une implémentation pour le modèle choisi...')
+    )
+    
     mf    <- modeleFitted()$mf
     temps <- modeleFitted()$temps
     
@@ -196,7 +229,6 @@ shinyServer(function(input, output, session) {
     }
     if(input$implementation=='R/ranger'){
       data=datas()
-      # save(data, file='~/data.rdata') #; load('~/data.rdata'); data
       require(ranger)
       modeleFitted <- ranger(as.formula(paste(input$target,'~ .')), data=data)
       # //
@@ -226,7 +258,7 @@ shinyServer(function(input, output, session) {
   output$uiPresentation <- renderUI({
 
     if(input$modele=='randomForest'){
-      choix_implementations=c('scikitlearn/randomForest','R/ranger')
+      choix_implementations=c('','scikitlearn/randomForest','R/ranger')
       # d'autres suggestions ?
     }
     
