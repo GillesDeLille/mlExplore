@@ -1,0 +1,3 @@
+modele;implementation
+randomForest;scikitlearn/randomForest
+randomForest;R/ranger

@@ -8,17 +8,16 @@ def reglage_type(z):
     z=[z]
   return z
 
-def prepare_datas(fichier, cible, dummies=[], to_drop=[], pafexemples='exemples/'):
+def prepare_datas(fichier, dummies=[], to_drop=[], pafexemples='exemples/'):
   to_drop=reglage_type(to_drop)
   dummies=reglage_type(dummies)
-  features=pd.read_csv(pafexemples+fichier)
-  target=features[cible]
+  datas=pd.read_csv(pafexemples+fichier)
   n=len(dummies)
   if(n>0):
     for i in range(0,n):
       di=dummies[i]
-      features=features.join(pd.get_dummies(features[di], prefix=di))
+      datas=datas.join(pd.get_dummies(datas[di], prefix=di))
       to_drop.append(dummies[i])
-  to_drop.append(cible)
-  features=features.drop(to_drop,axis=1)
-  return (features,target)
+  datas=datas.drop(to_drop, axis=1)
+  return (datas)
+  

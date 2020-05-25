@@ -12,26 +12,17 @@ if(F){
   data %>% select(Churn) %>% tail(50)
 }
 
-# py_run_file('pretraitement_rf.py')
-# py_run_file('randomForest.py')
-# py$confusion
-# py$clfScore
-
 source_python('src_python/pretraitement.py')
 
-# fichier='churn.csv' ; cible='Churn?'
-fichier='churn2.csv' ; cible='Churn'
+# fichier='churn.csv' ; target='Churn?'
+fichier='churn2.csv' ; target='Churn'
 
-datas=prepare_datas(fichier,cible,
+datas=prepare_datas(fichier,
                     dummies=c("Int'l Plan", 'VMail Plan'),
                     to_drop=c('State', 'Area Code', 'Phone'))
-exemples=list(
-  data=datas[[1]] %>% as_tibble(),
-  target=datas[[2]] %>% as_tibble()
-)
 
 source_python('src_python/randomForest.py')
-res=rf(datas, cible)
+res=skl(datas, target)
 res=list(modele=res[[1]], confusion=res[[2]], score=res[[3]], y_test=res[[4]], y_probas=res[[5]], precision=res[[6]], rappel=res[[7]])
 
 if(F){

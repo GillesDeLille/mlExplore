@@ -75,8 +75,7 @@ shinyServer(function(input, output, session) {
   output$features <- DT::renderDataTable({
     
     # dplyr !!! je ne sais pas m'en passer...
-    if(formatDonnees()=='liste_ft') features=datas()[[1]] %>% mutate_if(is.double, as.character)
-    if(formatDonnees()=='tibble')  features=datas()       %>% select(-input$target) %>% mutate_if(is.double, as.character)
+    features=datas() %>% select(-input$target) %>% mutate_if(is.double, as.character)
     datatable(
       features, # caption = 'Features',
       options = list(searching=T, paging=T, pageLength=100, scrollY=100, scrollX=800, info=F),
@@ -85,32 +84,22 @@ shinyServer(function(input, output, session) {
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
-  formatDonnees <- reactive({
-    # Pour laisser un maximum de champs libre aux différentes implémentations, 
-    # on participe ici même au prétraitement des données
-    
-    # validate( need(!is.null(input$implementation),'Choisir une implementation du modèle dans la section "Présentation des modèles" ') )
+   datas <- reactive({
     validate( need(input$implementation!='','Choisir une implementation du modèle dans la section "Présentation des modèles" ') )
     
-    formatListe=c('scikitlearn/randomForest') # implémentation acceptant les données sous forme de liste (features, target)
-    formatTibble=c('R/ranger')  # implémentation acceptant les données sous forme d'un tibble en entrée
+    # implémentations acceptant les données sous forme d'un tableau contenant features et target
+    pyth=c('scikitlearn/randomForest') 
+    r=c('R/ranger')
     # D'autres suggestions ?
-
-    if(input$implementation %in% formatListe) formatDonnees='liste_ft'
-    if(input$implementation %in% formatTibble) formatDonnees='tibble'
-    formatDonnees
-  })
-  
-  # ---------------------------------------------------------------------------------------------------------------------------------------------------
-  datas <- reactive({
-    if(formatDonnees()=='liste_ft') datas=pyth_datas()   # Le langage choisi ici
-    if(formatDonnees()=='tibble')   datas=r_datas()      # importe peu...
+    
+    if(input$implementation %in% pyth) datas=pyth_datas()
+    if(input$implementation %in% r) datas=r_datas()
     datas
   })
   
   # --------------------------------------------------------------------------------
   # Pretraitement des données par python
-  # Renvoie une liste (features, target)
+  # Renvoie un tableau contenant features et target
   pyth_datas <- reactive({
     fichier=paste0(input$dossier,'/',input$fichier)
     validate(
@@ -118,17 +107,16 @@ shinyServer(function(input, output, session) {
       need(!is.null(input$target), 'Choisir une target'),
       need(file.exists(fichier), '...')
     )
-    print('====================================')
-    print('Prétraitement des données avec panda')
+    print('=====================================')
+    print('Prétraitement des données avec pandas')
     print('=> liste (features, target)')
-    print('====================================')
+    print('=====================================')
     
     source_python('src_python/pretraitement.py')
     toDrop='' ; if(!is.null(input$to_drop)){ toDrop=input$to_drop }
     dummies='' ; if(!is.null(input$dummies)){ dummies=input$dummies }
     datas=prepare_datas(
       input$fichier,
-      input$target,
       dummies=dummies,
       to_drop=toDrop,
       pafexemples=paste0(input$dossier,'/')
@@ -144,7 +132,7 @@ shinyServer(function(input, output, session) {
   # --------------------------------------------------------------------------------
   # Pretraitement des données par R (je m'applique ici à fournir les données au bon format pour ranger)
   # Renvoie un tibble contenant features et target
-  # Avec un bon format pour les noms de colonnes
+  # Avec des noms de colonnes valides...
   r_datas <- reactive({
     validate( need(!is.null(input$target), 'Choisir une target') )
     
@@ -168,8 +156,8 @@ shinyServer(function(input, output, session) {
       need(!is.null(input$implementation), 'Choisir une implémentation pour le modèle choisi...')
     )
     
-    mf    <- modeleFitted()$mf
-    temps <- modeleFitted()$temps
+    mf    <- mdl()$mf
+    temps <- mdl()$temps
     
     print('=================================')
     print(input$implementation)
@@ -200,11 +188,11 @@ shinyServer(function(input, output, session) {
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
-  modeleFitted <- reactive({
+  mdl <- reactive({
     validate( need(!is.null(input$implementation),'Choisir une implémentation du modèle dans la section "Présentation des modèles"') )
     
     if(str_detect(input$implementation, 'scikitlearn')){
-      source_python(paste0('src_python/',input$modele,'.py'))  # nom de la methode implémentée : skl()
+      source_python(paste0('src_python/',input$modele,'.py'))  # nom de la methode implémentée : skl_fit()
     }
     
     tic.clearlog()
@@ -214,31 +202,31 @@ shinyServer(function(input, output, session) {
     toc(log = T)
     
     if(str_detect(input$implementation,'scikitlearn')){
-      modeleFitted=skl(datas)
+      mdl=skl_fit(datas, input$target)
       # On appréciera que les prochaines implémentations suivent l'exemple de cette sortie,
       # pour faciliter l'intégration des résultats complets dans la section ...résultats
-      modeleFitted=list(
-        modele      = modeleFitted[[1]], 
-        confusion   = modeleFitted[[2]], 
-        score       = modeleFitted[[3]], 
-        y_test      = modeleFitted[[4]], 
-        y_probas    = modeleFitted[[5]], 
-        precision   = modeleFitted[[6]], 
-        rappel      = modeleFitted[[7]]
+      mdl=list(
+        modele      = mdl[[1]], 
+        confusion   = mdl[[2]], 
+        score       = mdl[[3]], 
+        y_test      = mdl[[4]], 
+        y_probas    = mdl[[5]], 
+        precision   = mdl[[6]], 
+        rappel      = mdl[[7]]
       )
     }
     if(input$implementation=='R/ranger'){
       data=datas()
       require(ranger)
-      modeleFitted <- ranger(as.formula(paste(input$target,'~ .')), data=data)
+      mdl <- ranger(as.formula(paste(input$target,'~ .')), data=data)
       # //
       # TO DO
-      # "ranger" un maximum de résultats sous la même forme que pour la sortie de skl (avez-vous vu le jeu de mot ?)
+      # "ranger" un maximum de résultats sous la même forme que pour la sortie de skl (avez-vous apprécié le jeu de mot ?)
       # //
     }
 
     toc(log = T)
-    list(mf=modeleFitted, temps=tic.log())
+    list(mf=mdl, temps=tic.log())
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -257,16 +245,17 @@ shinyServer(function(input, output, session) {
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$uiPresentation <- renderUI({
 
-    if(input$modele=='randomForest'){
-      choix_implementations=c('','scikitlearn/randomForest','R/ranger')
-      # d'autres suggestions ?
-    }
+    # if(input$modele=='randomForest'){
+    #   choix_implementations=c('','scikitlearn/randomForest','R/ranger')
+    #   # d'autres suggestions ?
+    # }
+    impl=fread('implementations.csv')
+    choix_implementations=impl[modele=='randomForest']$implementation
     
     list(
-      # h4(input$modele),
       setShadow(class = 'box'),
       column(2,br()), box(width=8, includeMarkdown(paste0('markdown/',input$modele,'.Rmd'))), column(2,br()),
-      box(width=8, 
+      box(width=6, 
         h4('Implémentation'),
         selectInput('implementation', 'Choix de l\'implémentation du modèle', choices =choix_implementations)
       )

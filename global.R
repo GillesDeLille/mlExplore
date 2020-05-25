@@ -22,8 +22,9 @@ pafdata='data'
 # 1) upload fichiers utilisateurs. Fait
 
 # 2) modeles proposés : 
-#   lecture dans un fichier .txt
-#   scripts .py et .R standardisés
+# lecture dans un fichier .csv fait
+
+# 3) scripts .py et .R standardisés
   
 # ==========================================================================================
 

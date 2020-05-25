@@ -200,6 +200,9 @@ Option 1 : accédez classiquement depuis le navigateur à la page
 Option 2 : sous Rstudio, se positionner sur global.R, ui.R ou server.R
 puis runApp
 
+Option 3 : cliquez sur ce lien
+[![Binder](http://mybinder.org/badge_logo.svg)](http://mybinder.org/v2/gh/spyrales/la-piscine/master?urlpath=shiny/mlExplore/)
+
 Personnellement, je n’ai pas pris le temps d’installer (sur mon pc
 nouvellement acquis) un server Shiny. Vous me direz si vous rencontrez
 des problèmes en choisissant l’option 1, mais à priori il n’y aura pas
