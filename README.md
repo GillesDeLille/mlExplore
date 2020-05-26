@@ -124,6 +124,20 @@ On peut commencer par…
 Conseils pour le bon démarrage de l’application
 -----------------------------------------------
 
+Deux possibilités :
+
+**=&gt; Profiter de l’application directement à partir d’un des liens
+suivants :**
+
+Version stable sur Spyrales : cliquez sur ce lien
+[![Binder](http://mybinder.org/badge_logo.svg)](http://mybinder.org/v2/gh/spyrales/la-piscine/master?urlpath=shiny/mlExplore/)
+
+Version la plus récente (instable), ici :
+[![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/GillesDeLille/mlExplore/master?urlpath=shiny/)
+
+**=&gt; ou alors installer l’appli sur votre machine (dans l’idée à plus
+ou moins long terme de contribuer au projet)**
+
 Pré-requis :
 
 1.  Pour ceux qui traverse des proxies, on m’a soufflé qu’une ligne
@@ -199,9 +213,6 @@ Option 1 : accédez classiquement depuis le navigateur à la page
 
 Option 2 : sous Rstudio, se positionner sur global.R, ui.R ou server.R
 puis runApp
-
-Option 3 : cliquez sur ce lien
-[![Binder](http://mybinder.org/badge_logo.svg)](http://mybinder.org/v2/gh/spyrales/la-piscine/master?urlpath=shiny/mlExplore/)
 
 Personnellement, je n’ai pas pris le temps d’installer (sur mon pc
 nouvellement acquis) un server Shiny. Vous me direz si vous rencontrez

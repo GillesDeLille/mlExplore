@@ -1,0 +1,18 @@
+name: ml-explore
+channels:
+  - conda-forge
+dependencies:
+  - pandas
+- r-base=3.6
+- r-dt
+- r-future
+- r-rmarkdown
+- r-shinydashboard 
+- r-reticulate
+- r-ranger
+- r-shinyeffects
+- r-stringr
+- r-tictoc
+- r-tidyverse
+- scikit-learn
+- scikit-plot
