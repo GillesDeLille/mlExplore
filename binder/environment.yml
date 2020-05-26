@@ -16,3 +16,6 @@ dependencies:
   - r-tidyverse
   - scikit-learn
   - scikit-plot
+  - r-data.table
+  - r-mltools
+  - r-dplyr
