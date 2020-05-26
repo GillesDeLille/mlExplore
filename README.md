@@ -135,6 +135,8 @@ Version stable sur Spyrales : cliquez sur ce lien
 Version la plus récente (instable), ici :
 [![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/GillesDeLille/mlExplore/master?urlpath=shiny/)
 
+L’appli met du temps à démarrer, mais normalement ça fonctionne !
+
 **=&gt; ou alors installer l’appli sur votre machine (dans l’idée à plus
 ou moins long terme de contribuer au projet)**
 
