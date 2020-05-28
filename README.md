@@ -74,15 +74,55 @@ Mais voyons d’un peu plus près sous 2 angles différents
 
 ### Du point de vue de l’utilisateur, que trouve-t-on dans ce projet ?
 
-Une interface permettant de choisir nos propres fichiers pour les
-soumettre au ML
+Une interface permettant de
 
-Un premier modèle est proposé : **Random Forest**, avec une
-implémentation **Python/scikit-learn**
+#### Choisir nos propres fichiers pour les soumettre au ML
 
-et une autre avec **R** associé au costaud **ranger** …Juste une
-remarque en passant, je ne suis pas encore copain avec lui et il a l’air
-suceptible question paramétrage. Je vais donc prendre mon temps…
+-   Un fichier de données, livré pour l’exemple : churn2.csv
+
+C’est lui qui est traité par défaut au démarrage de l’appli, en guise de
+validation du bon déroulement de chaque fonctionnalité de l’appli.
+
+-   Tout fichier envoyé dans le dossier data (dans l’arborescence du
+    projet), via un bouton **upload**
+
+-   Le minimum syndical pour le prétraitement des données :
+
+    -   définition de la cible ou *target*,  
+    -   colonnes à retirer,  
+    -   découpage des colonnes catégorielles (*factors* dans le
+        jargon R) en *dummies*.
+
+Remarque au passage, je remercie
+<a href="mailto:lino.galiana@insee.fr" class="email">lino.galiana@insee.fr</a>
+et ses collègues pour leur très bon
+[article](https://linogaliana.netlify.app/post/datatable/datatable-intro/ "article")
+sur la librairie **data.table** et dont Spyrales à fait l’echo. Je
+développe (un peu) ce thème un peu plus bas, dans la rubrique *Point de
+vue du développeur*.
+
+#### Choisir le modèle à ajuster
+
+Une indication est donnée sur la validité du modèle choisi en rapport
+avec l’état des données (pré-traitées)
+
+Un premier modèle est proposé : **Random Forest**,
+
+-   avec une implémentation **Python/scikit-learn**
+
+-   et une autre en lagage **R** associé au costaud **ranger** …Juste
+    une remarque en passant, je ne suis pas encore copain avec lui et il
+    a l’air suceptible question paramétrage. Je vais donc prendre mon
+    temps…
+
+#### Afficher les scripts
+
+On peut afficher dans l’interface les scripts précis (R ou Python) mis
+en oeuvre pour l’ajustement et la restitution des résultats.
+
+Cela pourra peut-être servir pour faciliter leur mise au point avec le
+concours des utilisateurs qui ne prendraient part au projet que (et
+c’est déjà beaucoup) au travers l’interface.
 
 ### Du point de vue du développeur, qu’avons-nous appris/mis en oeuvre ?
 
@@ -100,6 +140,18 @@ Bibliothèques
 
 -   scikitlearn
 -   pandas
+
+Dans le détail du développement :
+
+L’article de Lino Galiana nous encourage à mettre en oeuvre data.table,
+j’ajoute selon les circonstances en pensant à une remarque qui m’a été
+faite par un certain Romain Lesur (il ne m’en voudra pas de le citer,
+j’espère), malgré l’attachement parfois aveugle que l’on peut porter à
+dplyr.  
+C’est chose faite (au moins partiellement) dans ce projet pour le
+bénéfice qu’apporte le méthode *one\_hot*. Pour être complet et ne pas
+me mettre à dos les sujets ensorcellés par le gros serpent, un procédé
+similaire en Python/pandas a fait l’affaire : get\_dummies
 
 Que faire de plus ?
 -------------------
@@ -120,6 +172,12 @@ On peut commencer par…
     la trouver dans scikit-learn)
 -   Soigner l’affichage de la sortie (exemple de la courbe de gain
     cumulée pour *random forest*)
+
+### Donner plus de possibilité aux utilisateurs
+
+-   Prise en compte des modifications des scripts dans l’éditeur de
+    texte (shinyAce)
+-   ?
 
 Conseils pour le bon démarrage de l’application
 -----------------------------------------------
