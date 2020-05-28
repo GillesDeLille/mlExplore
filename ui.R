@@ -11,13 +11,13 @@ dashboardPage(skin = 'green',
                     column(5, selectInput('dossier', 'Dossier', choices = c(pafexemples,pafdata))), column(7,uiOutput('uiFichiers')),
                     column(9,fileInput('infile', 'uploader des données')), column(3, checkboxInput('header', 'Header', value = T)),
                     column(12,uiOutput('uiTarget')),
-                    column(6,uiOutput('uiDummies')),
-                    column(6,uiOutput('uiTo_drop')),
-                    uiOutput('uiModeles')
+                    column(6,uiOutput('uiDummies')), column(6,uiOutput('uiTo_drop')),
+                    uiOutput('uiModeles')#, uiOutput('uiModeleValide'),
+                    
                   ),
                   menuItem('Données',tabName = 'donnees'),
                   menuItem('Présentation des modèles',tabName = 'presentation'),
-                  menuItem("Résultats", tabName = "resultats"),
+                  # menuItem("Résultats", tabName = "resultats"),
                   menuItem('Eléments à avoir en tête',tabName = 'fiche1')
                 )
               ),
@@ -28,17 +28,14 @@ dashboardPage(skin = 'green',
                   h5('Données disponibles'),
                   box(width=12,DT::dataTableOutput('donneesDisponibles')),
                   h5('Features prétraitées'),
-                  box(width=12,DT::dataTableOutput('features'))
+                  box(width=12,DT::dataTableOutput('dtFeatures'))
                   
                 )),
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "presentation", withMathJax(
-                  uiOutput('uiPresentation')
+                  uiOutput('uiPresentation'),
+                  uiOutput('uiEditImplementation')
                 )),
-                # ------------------------------------------------------------------------------------------------------------------------------------
-                tabItem(tabName = "resultats",
-                  column(12, uiOutput('uiResultats'))
-                ),
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "fiche1", withMathJax(
                   setShadow(class = 'box'),

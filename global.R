@@ -12,6 +12,8 @@ library(tictoc)
 library(shinydashboard)
 library(shinyEffects)
 
+library(shinyAce)
+
 
 pafexemples='exemples'
 pafdata='data'

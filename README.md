@@ -163,6 +163,7 @@ Pour les scripts R d’une part :
 -   shinydashboard (parce que c’est beau)
 -   data.table (Spyrales en a parlé, alors…)
 -   mltools (bien pratique)
+-   shinyAce (pour afficher un éditeur de texte dans l’appli)
 
 -   ranger : le petit dernier pour faire du randomForest efficace sous
     R, alternativement à scikitlearn qui s’avèrera là-dessus moins bon.
@@ -179,6 +180,7 @@ Les commandes à passer, dans une console R :
     install.packages('readr')
     install.packages('mltools')
     install.packages('data.table')
+    install.packages('shinyAce')
     install.packages('ranger')
 
 Pour les scripts python d’autre part :
@@ -246,4 +248,8 @@ je reconnaît.
 
 Plus vendeur, une image :
 
-![Sortie d’un modèle célèbre](mlExplore.png)
+![Sortie d’un modèle célèbre](mlExplore1.png)
+
+Et puis une autre, l’interface ayant un peu évolué entre temps :
+
+![Le code python est affiché dans l’appli](mlExplore2.png)

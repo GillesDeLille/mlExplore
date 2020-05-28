@@ -19,3 +19,5 @@ dependencies:
   - r-data.table
   - r-mltools
   - r-dplyr
+  - r-shinyAce
+  

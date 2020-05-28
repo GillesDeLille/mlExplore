@@ -26,5 +26,3 @@ Pour donner plus ou moins d'importance à la précision par rapport au rappel, o
 
 $$F_\beta=(1+\beta^2)\frac{précision.rappel}{\beta^2précision+rappel}$$
 
-On retrouve bien sûr $F_{score}$ en prenant $\beta=1$
-

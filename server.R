@@ -46,8 +46,33 @@ shinyServer(function(input, output, session) {
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  modelesValides <- reactive({
+    # Tous les modèles ne sont pas systématiquement applicables aux données (même prétraitées)
+    # On s'attachera ici à donner la liste des modèles, parmis tous ceux implémentés, qui sont compatibles avec les données
+    # // TO DO
+    # // Définir les critères associés à chaque modèle
+    # // Par exemple, pour randomForest les features et la target doivent toutes être numériques
+    
+    # Pour l'instant, on triche : randomForest fonctionne très bien avec l'exemple churn.csv
+    mv=c('randomForest')
+  })
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$uiModeles <- renderUI({
-    selectInput('modele','Modèle', choices = c('randomForest'))
+    impl=fread('implementations.csv')
+    liste_modeles=impl$modele %>% unique()
+    selectInput('modele','Modèle à appliquer', choices = liste_modeles)
+  })
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  modeleOk <- reactive({
+    input$modele %in% modelesValides()
+  })
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  output$uiModeleValidite <- renderUI({
+    if(modeleOk()){
+      out=h5('Ce modèle est valide pour les données')
+    }else{
+      out=h5('Ce modèle est incompatible avec les données. Ces dernières sont peut-être mal préparées !')
+    }
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -72,7 +97,7 @@ shinyServer(function(input, output, session) {
   })
 
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
-  output$features <- DT::renderDataTable({
+  output$dtFeatures <- DT::renderDataTable({
     
     # dplyr !!! je ne sais pas m'en passer...
     features=datas() %>% select(-input$target) %>% mutate_if(is.double, as.character)
@@ -84,16 +109,22 @@ shinyServer(function(input, output, session) {
   })
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
-   datas <- reactive({
-    validate( need(input$implementation!='','Choisir une implementation du modèle dans la section "Présentation des modèles" ') )
-    
+  langage <- reactive({
     # implémentations acceptant les données sous forme d'un tableau contenant features et target
     pyth=c('scikitlearn/randomForest') 
-    r=c('R/ranger')
+    R=c('R/ranger')
     # D'autres suggestions ?
     
-    if(input$implementation %in% pyth) datas=pyth_datas()
-    if(input$implementation %in% r) datas=r_datas()
+    if(input$implementation %in% pyth) langage='python'
+    if(input$implementation %in% R) langage='R'
+    langage
+  })
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  datas <- reactive({
+    validate( need(input$implementation!='','Choisir une implementation du modèle dans la section "Présentation des modèles" ') )
+    
+    if(langage()=='python') datas=pyth_datas()
+    if(langage()=='R')      datas=r_datas()
     datas
   })
   
@@ -191,40 +222,23 @@ shinyServer(function(input, output, session) {
   mdl <- reactive({
     validate( need(!is.null(input$implementation),'Choisir une implémentation du modèle dans la section "Présentation des modèles"') )
     
-    if(str_detect(input$implementation, 'scikitlearn')){
-      source_python(paste0('src_python/',input$modele,'.py'))  # nom de la methode implémentée : skl_fit()
-    }
-    
     tic.clearlog()
     tic('total')
     tic('pretraitement')
-    datas=datas()
+    features_target=datas()
     toc(log = T)
     
     if(str_detect(input$implementation,'scikitlearn')){
-      mdl=skl_fit(datas, input$target)
-      # On appréciera que les prochaines implémentations suivent l'exemple de cette sortie,
-      # pour faciliter l'intégration des résultats complets dans la section ...résultats
-      mdl=list(
-        modele      = mdl[[1]], 
-        confusion   = mdl[[2]], 
-        score       = mdl[[3]], 
-        y_test      = mdl[[4]], 
-        y_probas    = mdl[[5]], 
-        precision   = mdl[[6]], 
-        rappel      = mdl[[7]]
-      )
+      target=input$target
+      implementation=paste0('src_python/',input$implementation,'.py')
+      source_python(implementation)  # nom de la methode implémentée : skl_fit()
+      source(paste0('src_R/scikitlearn/fit_',input$modele,'.R'), local = T)  # ==> mdl
     }
-    if(input$implementation=='R/ranger'){
-      data=datas()
-      require(ranger)
-      mdl <- ranger(as.formula(paste(input$target,'~ .')), data=data)
-      # //
-      # TO DO
-      # "ranger" un maximum de résultats sous la même forme que pour la sortie de skl (avez-vous apprécié le jeu de mot ?)
-      # //
+    if(langage()=='R'){
+      target=input$target
+      source(paste0('src_R/',input$implementation,'.R'), local = T)          # ==> mdl
     }
-
+    
     toc(log = T)
     list(mf=mdl, temps=tic.log())
   })
@@ -244,24 +258,47 @@ shinyServer(function(input, output, session) {
  
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$uiPresentation <- renderUI({
-
-    # if(input$modele=='randomForest'){
-    #   choix_implementations=c('','scikitlearn/randomForest','R/ranger')
-    #   # d'autres suggestions ?
-    # }
     impl=fread('implementations.csv')
-    choix_implementations=impl[modele=='randomForest']$implementation
+    choix_implementations=impl[modele==input$modele]$implementation
     
-    list(
-      setShadow(class = 'box'),
-      column(2,br()), box(width=8, includeMarkdown(paste0('markdown/',input$modele,'.Rmd'))), column(2,br()),
-      box(width=6, 
-        h4('Implémentation'),
-        selectInput('implementation', 'Choix de l\'implémentation du modèle', choices =choix_implementations)
+    tabFit=NULL
+    if(modeleOk()){
+      tabFit=tabPanel(id='fit', title = 'Ajustement et résultats',
+                      uiOutput('uiResultats')
       )
-      
+    }
+    navbarPage(
+      id = 'nav',
+      title = input$modele,
+      tabPanel(
+        id='presentation', title = 'Description',
+        setShadow(class = 'box'),
+        column(2,br()), box(width=8, includeMarkdown(paste0('markdown/',input$modele,'.Rmd'))), column(2, br()),
+        column(6,uiOutput('uiModeleValidite'))
+      ),
+      tabPanel(
+        id='choixImplementation',
+        title = "Choix de l'implémentation", 
+        selectInput('implementation', 'Choix de l\'implémentation du modèle', choices =choix_implementations)
+      ),
+      tabFit
     )
   })  
-  
+
+  output$uiEditImplementation <- renderUI({
+    validate( need(!is.null(input$nav),'...') )
+    out <- NULL
+    print(input$nav)
+    if(input$nav=="Choix de l'implémentation"){
+      
+      # out=list(aceEditor('editImplementation', input$implementation, mode='r', theme = 'ambiance'))
+      ext='.py' ; if(langage()=='R') ext='.R'
+      fileName <- paste0('src_',langage(),'/',input$implementation,ext)
+      print(fileName)
+      script=readChar(fileName, file.info(fileName)$size)
+      out=list(aceEditor('editImplementation', script, mode=langage(), theme = 'ambiance'))
+    }
+    out
+  })  
   
 })
