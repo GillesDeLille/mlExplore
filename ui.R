@@ -2,7 +2,7 @@
 largeurBandeau=350
 
 dashboardPage(skin = 'green',
-              dashboardHeader(title = "Machine Learning", titleWidth=largeurBandeau),
+              dashboardHeader(title = "mlExplore", titleWidth=largeurBandeau),
               dashboardSidebar(
                 width=largeurBandeau,
                 sidebarMenu(

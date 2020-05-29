@@ -50,9 +50,9 @@ Il apporte plutôt une dimension pédagogique en présentant aux *utilisateurs*
 - des modèles,
 - un concentré d'éléments de connaissances relatives au ML, adapté *à eux* puisque enrichi *par eux*.
 
-Mais l'intérêt pédagogique ne se résume pas au produit fini. 
+Mais l'intérêt pédagogique ne se résume pas à l'application produite. 
 
-Au contraire, l'élaboration elle-même du projet constitut l'essentiel de la démarche engagée ici.
+Au contraire, l'élaboration elle-même de *mlExplore** constitut l'essentiel de la démarche engagée ici.
 
 Les apports pour notre connaissance et savoir-faire sont multiples :
 
@@ -73,7 +73,7 @@ Au tout début...
 
 Mais voyons d'un peu plus près sous 2 angles différents
 
-### Du point de vue de l'utilisateur, que trouve-t-on dans ce projet ?
+### Du point de vue de l'utilisateur, que trouve-t-on dans cette application ?
 
 Une interface permettant de  
 
@@ -83,9 +83,9 @@ Une interface permettant de
 
 C'est lui qui est traité par défaut au démarrage de l'appli, en guise de validation du bon déroulement de chaque fonctionnalité de l'appli.
 
-- Tout fichier envoyé dans le dossier data (dans l'arborescence du projet), via un bouton **upload**
+- Tout fichier envoyé dans le dossier data (dans l'arborescence du projet), via un bouton **< upload >**
 
-- Le minimum syndical pour le prétraitement des données :
+- Le minimum syndical pour le <span style="color: #FE446A;">*preprocessing*</span> :
 
   + définition de la cible  ou *target*,  
   + colonnes à retirer,  
@@ -96,21 +96,21 @@ Remarque au passage, je remercie lino.galiana@insee.fr et ses collègues pour le
 
 #### Choisir le modèle à ajuster
 
-Une indication est donnée sur la validité du modèle choisi en rapport avec l'état des données (pré-traitées)
+Une indication est donnée sur la <span style="color: #FE446A;">validité du modèle</span> choisi en rapport avec l'état des données (pré-traitées)
 
-Un premier modèle est proposé : **Random Forest**,
+Un premier modèle est proposé : <span style="color: #FE446A;">*Random Forest*</span>,
 
   + avec une implémentation **Python/scikit-learn**  
 
   + et une autre en lagage **R** associé au costaud **ranger** ...Juste une remarque en passant, je ne suis pas encore copain avec lui
 et il a l'air suceptible question paramétrage. Je vais donc prendre mon temps...
 
-#### Afficher les scripts
+#### L'interface permet aussi d'afficher les scripts de *Machine Learning*
 
-On peut afficher dans l'interface les scripts précis (R ou Python) mis en oeuvre pour l'ajustement et la restitution des résultats.
+On peut <span style="color: #FE446A;">*contrôler les scripts*</span> précis (R ou Python) mis en oeuvre pour l'ajustement du modèle et la restitution des résultats.
 
 Cela pourra peut-être servir pour faciliter leur mise au point avec le concours des utilisateurs qui ne prendraient part au projet
-que (et c'est déjà beaucoup) au travers l'interface.
+que (et c'est déjà beaucoup) au travers de l'interface.
 
 ### Du point de vue du développeur, qu'avons-nous appris/mis en oeuvre ?
 
@@ -131,9 +131,13 @@ Bibliothèques
 
 Dans le détail du développement :
 
-L'article de Lino Galiana nous encourage à mettre en oeuvre data.table, j'ajoute selon les circonstances en pensant à une remarque qui m'a été faite par un certain Romain Lesur (il ne m'en voudra pas de le citer, j'espère), malgré l'attachement parfois aveugle que l'on peut porter à dplyr.  
-C'est chose faite (au moins partiellement) dans ce projet pour le bénéfice qu'apporte le méthode *one_hot*.
-Pour être complet et ne pas me mettre à dos les sujets ensorcellés par le gros serpent, un procédé similaire en Python/pandas a fait l'affaire : get_dummies
+L'article de Lino Galiana nous encourage à <span style="color: blue;">*mettre en oeuvre data.table*</span>, j'ajoute <span style="color: blue;">*selon les circonstances*</span> en pensant à une remarque qui m'a été faite par un certain Romain Lesur (il ne m'en voudra pas de le citer, j'espère), malgré l'attachement parfois aveugle que l'on peut porter à dplyr.  
+C'est chose faite (au moins partiellement) dans ce projet, pour le bénéfice qu'apporte la <span style="color: blue;">méthode *one_hot*</span>.
+Pour être complet et ne pas me mettre à dos les sujets ensorcellés par le gros serpent, un procédé similaire en Python/pandas a fait l'affaire : <span style="color: blue;">*get_dummies*</span>
+
+Plus sur le fond, lorsque l'implémentation du modèle est écrite en Python, un script <span style="color: blue;">*modele*.py</span> définit la méthode *fit*.  
+Le programme principal use alors de la magie de la librairie <span style="color: blue;">*reticulate*</span> pour sourcer le script et appeler la méthode. Il fait ça dans un prolongement de lui même, visible de l'utilisateur (c'est là l'intérêt), que constitue le script <span style="color: blue;">fit_*modele*.R</span>
+Pour l'utilisateur, les deux scripts sont visibles et c'est ce qui compte.
 
 
 
@@ -173,7 +177,7 @@ Version stable sur Spyrales : cliquez sur ce lien [![Binder](http://mybinder.org
 Version la plus récente (instable), ici :
 [![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/GillesDeLille/mlExplore/master?urlpath=shiny/)
 
-L'appli met du temps à démarrer, mais normalement ça fonctionne !
+L'appli met du temps à démarrer, mais normalement ça fonctionne ! (un raffraîchissement de la page - touche F5 - est parfois utile suite à l'erreur 500 trop fréquente à mon goût...)
 
 **=> ou alors installer l'appli sur votre machine (dans l'idée à plus ou moins long terme de contribuer au projet)**
 
