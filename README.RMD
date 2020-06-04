@@ -152,6 +152,16 @@ On peut commencer par...
 - Tous les fichiers utilisateurs .csv ne sont pas bien pris en compte
 - ?
 
+### Faire une présentation générale du Machine Learning
+
+Proposer en première page une présentation succinte du domaine, si possible infrographies (libres de droit) à l'appui.
+
+En bref, réserver un accueil plus chaleureux aux utilisateurs les plus novices.
+
+Faire apparaître clairement les **composantes** de ce monde **de l'apprentissage automatique** qui sont **prises en compte** dans
+la dernière version de l'application. On cherchera alors à faire bouger le curseur entre ce qui est fait et ce qu'il reste à faire
+
+Ajouter des références, des liens vers des sites que Spyrales recommanderait pour l'approfondissement de différentes notions.
 
 ### Ajouter des modèles
 
@@ -162,6 +172,8 @@ On peut commencer par...
 ### Donner plus de possibilité aux utilisateurs
 
 - Prise en compte des modifications des scripts dans l'éditeur de texte (shinyAce)
+- Permettre la recherche des bons hyper-paramètres (gridSearchCV)
+- Définition des pipelines
 - ?
 
 ## Conseils pour le bon démarrage de l'application
