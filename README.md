@@ -220,11 +220,15 @@ ou moins long terme de contribuer au projet)**
 
 Pré-requis :
 
-1.  Pour ceux qui traverse des proxies, on m’a soufflé qu’une ligne
+1.  Le logiciel R installé (évidemment). On en est à la version 4 depuis
+    le 24 avril, mais une version antérieure devrait encore convenir
+    durablement.
+
+2.  Pour ceux qui traversent des proxies, on m’a soufflé qu’une ligne
     telle que  
     **Sys.setenv(http\_proxy = “xxxx”)**  
     peut aider dans global.R
-2.  Un certain nombre de librairies sont bien sûr nécessaires
+3.  Un certain nombre de librairies sont bien sûr nécessaires
 
 Pour les scripts R d’une part :
 
@@ -293,15 +297,33 @@ C’est presque tout :
 Option 1 : accédez classiquement depuis le navigateur à la page
 @ip/users/votreUser/mlExplore/
 
-Option 2 : sous Rstudio, se positionner sur global.R, ui.R ou server.R
-puis runApp
+Option 2 : sous Rstudio, -&gt; ouvrir le projet mlExplore.Rproj, puis au
+moins l’un des 3 fichiers : global.R, ui.R ou server.R -&gt; puis runApp
+
+Autre option : Installation et éxecution locale, en l’absence d’un
+serveur Shiny
+
+-&gt; Pour lancer l’appli dans votre navigateur comme le ferait le
+serveur Shiny, vous pouvez exécuter en ligne de commande :
+
+    Rscript -e 'shiny::runApp("mlExplore/", port=8000)'
+
+-&gt; Si vous utilisez conda et que vous voulez en maîtriser
+l’environnement d’exécution
+
+    conda env create -f binder/environment.yml
+    conda activate la-piscine
+    Rscript -e 'shiny::runApp("mlExplore/", port=8000)'
+
+L’application sera disponible à l’adresse
+<a href="http://localhost:8000" class="uri">http://localhost:8000</a>
 
 Personnellement, je n’ai pas pris le temps d’installer (sur mon pc
 nouvellement acquis) un server Shiny. Vous me direz si vous rencontrez
 des problèmes en choisissant l’option 1, mais à priori il n’y aura pas
 de soucis.
 
-Je suis dans le cas de l’option 2
+Je suis dans le cas de l’option 2 lorsque je travaille sur le projet
 
 -   pour mon pc perso, tout fonctionne parfaitement.
 

@@ -1,4 +1,4 @@
-name: ml-explore
+name: la-piscine
 channels:
   - conda-forge
 dependencies:
