@@ -219,15 +219,11 @@ Conseils pour le bon démarrage de l’application
 
 Deux possibilités :
 
-**=&gt; Profiter de l’application directement à partir d’un des liens
-suivants :**
+**=&gt; Profiter de l’application directement à partir du lien suivant
+:**
 
 Version stable sur Spyrales : cliquez sur ce lien
 [![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/spyrales/la-piscine/master?urlpath=shiny/mlExplore/)
-<!-- [![Binder](http://mybinder.org/badge_logo.svg)](http://mybinder.org/v2/gh/pnavaro/la-piscine/binder?urlpath=shiny/mlExplore/) -->
-
-Version la plus récente (instable), ici :
-[![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/GillesDeLille/mlExplore/master?urlpath=shiny/)
 
 L’appli met du temps à démarrer, mais normalement ça fonctionne ! (un
 raffraîchissement de la page - touche F5 - est parfois utile suite à
@@ -285,7 +281,7 @@ Les commandes à passer, dans une console R :
 Pour les scripts python d’autre part :
 
 -   pandas
--   scikit-learn\`
+-   scikit-learn
 
 Mais tant qu’on y est, on peut installer aussi d’autres librairies qui
 seront utiles rapidement.
@@ -301,14 +297,19 @@ Toujours sous R, j’ai fait comme ceci :
     conda_install("r-reticulate", "scikit-plot")
     conda_install("r-reticulate", "seaborn")
 
-Après avoir récupéré tout le paquet (avec l’outil git à priori), je vois
-2 options :
+Après avoir tout récupéré (le plus simple est de faire un fork depuis
+[la-piscine](https://github.com/spyrales/la-piscine/) et utiliser le
+sytème de contrôle de version
+[git](https://spyrales.netlify.app/blog/20200329-memogit/)), déposer le
+dossier mlExplore
 
-1.  le déposer dans le dossier ShinyApps s’il existe et qu’un serveur
-    Shiny tourne sur votre machine locale.
+1.  dans ShinyApps/ si un serveur Shiny tourne sur votre machine locale
+    (ce dernier, sauf configuration particulière, scrute vos projets
+    dans le dossier ShinyApps/)
 
-2.  le déposer où bon vous semble pour le reconnaître ensuite dans vos
-    projets à partir de l’environnement Rstudio.
+2.  sinon où bon vous semble pour le reconnaître ensuite dans vos
+    projets à partir de votre environnement de développement, disons …
+    Rstudio !
 
 C’est presque tout :
 
