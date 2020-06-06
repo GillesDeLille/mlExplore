@@ -183,10 +183,6 @@ Deux possibilités :
 **=> Profiter de l'application directement à partir d'un des liens suivants :**
 
 Version stable sur Spyrales : cliquez sur ce lien [![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/spyrales/la-piscine/master?urlpath=shiny/mlExplore/)
-<!-- [![Binder](http://mybinder.org/badge_logo.svg)](http://mybinder.org/v2/gh/pnavaro/la-piscine/binder?urlpath=shiny/mlExplore/) -->
-
-Version la plus récente (instable), ici :
-[![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/GillesDeLille/mlExplore/master?urlpath=shiny/)
 
 L'appli met du temps à démarrer, mais normalement ça fonctionne ! (un raffraîchissement de la page - touche F5 - est parfois utile suite à l'erreur 500 trop fréquente à mon goût...)
 
