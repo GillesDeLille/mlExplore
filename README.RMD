@@ -180,7 +180,7 @@ Ajouter des références, des liens vers des sites que Spyrales recommanderait p
 
 Deux possibilités :
 
-**=> Profiter de l'application directement à partir d'un des liens suivants :**
+**=> Profiter de l'application directement à partir du lien suivant :**
 
 Version stable sur Spyrales : cliquez sur ce lien [![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/spyrales/la-piscine/master?urlpath=shiny/mlExplore/)
 
