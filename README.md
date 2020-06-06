@@ -185,7 +185,7 @@ On peut commencer par…
 ### Faire une présentation générale du Machine Learning
 
 Proposer en première page une présentation succinte du domaine, si
-possible infrographies (libres de droit) à l’appui.
+possible infographies (libres de droit) à l’appui.
 
 En bref, réserver un accueil plus chaleureux aux utilisateurs les plus
 novices.
