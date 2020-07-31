@@ -16,7 +16,8 @@ from sklearn.metrics import recall_score
 # from sklearn.model_selection import cross_validate
 
 # fonction skl_fit : traitement avec la bibliotthèque scikitlearn
-def skl_fit(datas, cible='cible'):
+# def skl_fit(datas, cible='cible'):
+def skl_fit(X_train, y_train, X_test, y_test):
   # target=datas[cible]
   # data=datas.drop(cible, axis=1)
   # X_train, X_test, y_train, y_test = train_test_split(data, target, test_size=0.2, random_state=12)
