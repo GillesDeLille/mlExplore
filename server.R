@@ -33,7 +33,7 @@ shinyServer(function(input, output, session) {
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$uiDummies <- renderUI({
-    factors=donnees() %>% filter(f=is.character) %>% names()
+    factors=donnees() %>% select_if(is.character) %>% names()
     sel=NULL ; if(length(setdiff(c("Int'l Plan", 'VMail Plan'),factors))==0){ sel=c("Int'l Plan", 'VMail Plan') }
     selectInput('dummies','Dummies',choices = factors, selected = sel, multiple = T)
   })
@@ -215,6 +215,11 @@ shinyServer(function(input, output, session) {
     donnees
   })
   
+  # # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  output$uiEvaluation <- renderUI({
+    source('evaluation.R')
+    liste
+  })
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$uiResultats <- renderUI({
     validate(
@@ -267,15 +272,8 @@ shinyServer(function(input, output, session) {
     
     if(str_detect(input$implementation,'scikitlearn')){
       target=input$target
-      # target=regulariserNomsColonnes(target)
       source_python(paste0('src_python/',input$implementation,'.py'))        # nom de la methode implémentée : skl_fit()
-      # source_python('src_python/scikitlearn/randomForest.py')
-      # save(X_train, file='~/X_train') ; load('~/X_train')
-      # save(y_train, file='~/y_train') ; load('~/y_train')
-      # save(X_test, file='~/X_test') ; load('~/X_test')
-      # save(y_test, file='~/y_test') ; load('~/y_test')
       source(paste0('src_R/scikitlearn/fit_',input$modele,'.R'), local = T)  # ==> mdl
-      # source('src_R/scikitlearn/fit_randomForest.R')
     }
     if(langage()=='R'){
       data=data_preproc0()
