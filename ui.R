@@ -31,7 +31,7 @@ dashboardPage(skin = 'green',
                 )),
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "pretraitement", withMathJax(
-                  tabsetPanel(selected='Preprocessing',
+                  tabsetPanel(#selected='Preprocessing',
                     tabPanel(
                       'Prétraitement basique',
                       uiOutput('uiPreproc0')

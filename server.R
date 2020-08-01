@@ -347,7 +347,12 @@ shinyServer(function(input, output, session) {
     script=readChar(fileName, file.info(fileName)$size)
     ace <- aceEditor('editpreproc0', script, mode='python', theme = 'ambiance')
     activer <- NULL
-    if((!is.null(input$to_drop))&(!is.null(input$dummies))) activer <- column(2,checkboxInput('okpreproc0','Activer'))
+    if((!is.null(input$to_drop))&(!is.null(input$dummies))){
+      val=F
+      factors=donnees() %>% select_if(is.character) %>% names()
+      if(length(setdiff(c("Int'l Plan", 'VMail Plan'),factors))==0){ val=T }
+      activer <- column(2,checkboxInput('okpreproc0','Activer', value = val))
+    }
 
     liste <- list(
       column(6,uiOutput('uiDummies')), column(6,uiOutput('uiTo_drop')),
