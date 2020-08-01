@@ -18,7 +18,7 @@ Les **F**aux **N**égatifs manquent à l'appel : ils diminuent quand le **Rappel
 $$Rappel=\frac {VP} {FP+FN}$$
 
 
-On peut s'amuser a calculer la F-mesure (ou *F-score*) qui n'est rien d'autre que la moyenne harmonique des 2 quantités qui nous intéresse
+On peut s'amuser a calculer la F-mesure (ou *F-score*) qui n'est rien d'autre que la moyenne harmonique des 2 quantités qui nous intéressent
 
 $$F_{score}=2\frac{précision.rappel}{précision+rappel}$$
 
