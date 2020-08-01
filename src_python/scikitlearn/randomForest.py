@@ -17,7 +17,7 @@ from sklearn.metrics import recall_score
 
 # fonction skl_fit : traitement avec la bibliotthèque scikitlearn
 # def skl_fit(datas, cible='cible'):
-def skl_fit(X_train, y_train, X_test, y_test):
+def skl_fit(X_train, y_train, X_test, y_test, titre_courbe):
   # target=datas[cible]
   # data=datas.drop(cible, axis=1)
   # X_train, X_test, y_train, y_test = train_test_split(data, target, test_size=0.2, random_state=12)
@@ -34,7 +34,7 @@ def skl_fit(X_train, y_train, X_test, y_test):
   # precision=precision_score(y_test, y_pred, average=None)
   # rappel=recall_score(y_test, y_pred, average=None)
   y_probas=clf.predict_proba(X_test)
-  skplt.metrics.plot_cumulative_gain(y_test, y_probas, title='Courbe de gain cumulée - '+cible, title_fontsize='small')
+  skplt.metrics.plot_cumulative_gain(y_test, y_probas, title=titre_courbe, title_fontsize='small')
   # plt.show()
   plt.savefig('figures/courbeGainCumulée')
   # --------------------------------------------------------------------------------------------------------------------------

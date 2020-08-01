@@ -1,4 +1,5 @@
-mdl=skl_fit(features_target, target)
+# mdl=skl_fit(data, target)
+mdl=skl_fit(X_train, y_train, X_test, y_test, paste0('Courbe de gain cumulée - ',target))
 # On appréciera que les prochaines implémentations suivent l'exemple de cette sortie,
 # pour faciliter l'intégration des résultats complets dans la section ...résultats
 mdl=list(
