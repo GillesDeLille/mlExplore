@@ -33,7 +33,7 @@ shinyServer(function(input, output, session) {
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   output$uiDummies <- renderUI({
-    factors=donnees() %>% Filter(f=is.character) %>% names()
+    factors=donnees() %>% filter(f=is.character) %>% names()
     sel=NULL ; if(length(setdiff(c("Int'l Plan", 'VMail Plan'),factors))==0){ sel=c("Int'l Plan", 'VMail Plan') }
     selectInput('dummies','Dummies',choices = factors, selected = sel, multiple = T)
   })
@@ -77,13 +77,12 @@ shinyServer(function(input, output, session) {
   
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   donnees <- reactive({
-    # validate( need(!is.null(input$fichier), '...') )
     fichier=paste0(input$dossier,'/',input$fichier)
     validate(
       need(!is.null(input$fichier), 'Choisir un fichier'),
       need(file.exists(fichier), '...')
     )
-      fread(fichier)
+    fread(fichier)
   })
 
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -91,7 +90,7 @@ shinyServer(function(input, output, session) {
     donnees <- donnees() %>% mutate_if(is.double, as.character)
     datatable(
       donnees, #caption = 'Données disponibles',
-      options = list(searching=T, paging=T, pageLength=100, scrollY=130, scrollX=800, info=F),
+      options = list(searching=T, paging=T, pageLength=100, scrollY=430, scrollX=800, info=F),
       rownames=F, selection=c(mode='single')
     )
   })
@@ -100,10 +99,10 @@ shinyServer(function(input, output, session) {
   output$dtFeatures <- DT::renderDataTable({
     
     # dplyr !!! je ne sais pas m'en passer...
-    features=datas() %>% select(-input$target) %>% mutate_if(is.double, as.character)
+    features=data_preproc0() %>% select(-input$target) %>% mutate_if(is.double, as.character)
     datatable(
       features, # caption = 'Features',
-      options = list(searching=T, paging=T, pageLength=100, scrollY=100, scrollX=800, info=F),
+      options = list(searching=T, paging=T, pageLength=100, scrollY=230, scrollX=800, info=F),
       rownames=F, selection=c(mode='single')
     )
   })
@@ -114,57 +113,92 @@ shinyServer(function(input, output, session) {
     pyth=c('scikitlearn/randomForest') 
     R=c('R/ranger')
     # D'autres suggestions ?
-    
-    if(input$implementation %in% pyth) langage='python'
-    if(input$implementation %in% R) langage='R'
+
+    langage='python'  # Par défaut, on prendra Python pour le preprocessing notamment
+    if(!is.null(input$implementation)){
+      if(input$implementation %in% pyth) langage='python'
+      if(input$implementation %in% R) langage='R'
+    }
     langage
   })
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
-  datas <- reactive({
-    validate( need(input$implementation!='','Choisir une implementation du modèle dans la section "Présentation des modèles" ') )
-    
-    if(langage()=='python') datas=pyth_datas()
-    if(langage()=='R')      datas=r_datas()
-    datas
+  data_preproc0 <- reactive({
+    data=donnees()
+    if(langage()=='python') data=pyth_preproc0()
+    if(langage()=='R')      data=r_preproc0()
+    data
+  })
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  data_preprocessed <- reactive({
+    data=pyth_preprocessing()
   })
   
-  # --------------------------------------------------------------------------------
-  # Pretraitement des données par python
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  # 1er Pretraitement des données par python
   # Renvoie un tableau contenant features et target
-  pyth_datas <- reactive({
-    fichier=paste0(input$dossier,'/',input$fichier)
-    validate(
-      need(!is.null(input$fichier), 'Choisir un fichier'),
-      need(!is.null(input$target), 'Choisir une target'),
-      need(file.exists(fichier), '...')
-    )
+  pyth_preproc0 <- reactive({
+    data=donnees()
     print('=====================================')
     print('Prétraitement des données avec pandas')
     print('=> liste (features, target)')
     print('=====================================')
+    # ----------------------------------------------------------------------------------------------------------------    
+    # 1er Pretraitement - basique : choix dans l'interface des variables indicatrices (dummies) et de celles à retirer
+    if(!is.null(input$okpreproc0)) if(input$okpreproc0){
+      source_python('src_python/util.py')
+      source_python(paste0('src/',applisession(),'/preproc0.py'))
+      print('!!! toto !!!')
+      toDrop='' ; if(!is.null(input$to_drop)){ toDrop=input$to_drop }
+      dummies='' ; if(!is.null(input$dummies)){ dummies=input$dummies }
+      data=prepare_data(
+        input$fichier,
+        dummies=dummies,
+        to_drop=toDrop,
+        pafexemples=paste0(input$dossier,'/')
+      )
+    }
     
-    source_python('src_python/pretraitement.py')
-    toDrop='' ; if(!is.null(input$to_drop)){ toDrop=input$to_drop }
-    dummies='' ; if(!is.null(input$dummies)){ dummies=input$dummies }
-    datas=prepare_datas(
-      input$fichier,
-      dummies=dummies,
-      to_drop=toDrop,
-      pafexemples=paste0(input$dossier,'/')
-    )
+    print('============')
+    print(head(data))
+    data
   })
   
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  # Preprocessing (python uniquement pour commencer)
+  pyth_preprocessing <- reactive({
+    data <- data_preproc0() ; target <- input$target
+    
+    names(data)=regulariserNomsColonnes(names(data)) ; target=regulariserNomsColonnes(target)
+    
+    print('')
+    print('=======  pyth_preprocessing  =======')
+    print(target)
+    print(data)
+    print('')
+    print('====================================')
+    res <- NULL
+    if(input$okPreprocessing){
+      source_python(paste0('src/',applisession(),'/preprocessing.py'))
+      res <- preprocessingSet(data, target)
+    }
+    print('')
+    print("====================================")
+    print("              res[[1]]")
+    print(res[[1]])
+    print('====================================')
+    
+    data_preprocessed <- NULL ; if(!is.null(res)) data_preprocessed <- list(X_train=res[[1]], y_train=res[[2]], X_test=res[[3]], y_test=res[[4]]) 
+    data_preprocessed
+  })
   
   # --------------------------------------------------------------------------------
-  regulariserNomsColonnes <- function(noms){
-    str_replace_all(string = noms, pattern = " |'", replacement = '.')
-  }
+  regulariserNomsColonnes <- function(noms){ str_replace_all(string = noms, pattern = " |'", replacement = '.') }
   
   # --------------------------------------------------------------------------------
   # Pretraitement des données par R (je m'applique ici à fournir les données au bon format pour ranger)
   # Renvoie un tibble contenant features et target
   # Avec des noms de colonnes valides...
-  r_datas <- reactive({
+  r_preproc0 <- reactive({
     validate( need(!is.null(input$target), 'Choisir une target') )
     
     print('====================================')
@@ -225,16 +259,26 @@ shinyServer(function(input, output, session) {
     tic.clearlog()
     tic('total')
     tic('pretraitement')
-    features_target=datas()
+    X_train <- data_preprocessed()$X_train
+    y_train <- data_preprocessed()$y_train
+    X_test  <- data_preprocessed()$X_test
+    y_test  <- data_preprocessed()$y_test
     toc(log = T)
     
     if(str_detect(input$implementation,'scikitlearn')){
       target=input$target
-      implementation=paste0('src_python/',input$implementation,'.py')
-      source_python(implementation)  # nom de la methode implémentée : skl_fit()
+      # target=regulariserNomsColonnes(target)
+      source_python(paste0('src_python/',input$implementation,'.py'))        # nom de la methode implémentée : skl_fit()
+      # source_python('src_python/scikitlearn/randomForest.py')
+      # save(X_train, file='~/X_train') ; load('~/X_train')
+      # save(y_train, file='~/y_train') ; load('~/y_train')
+      # save(X_test, file='~/X_test') ; load('~/X_test')
+      # save(y_test, file='~/y_test') ; load('~/y_test')
       source(paste0('src_R/scikitlearn/fit_',input$modele,'.R'), local = T)  # ==> mdl
+      # source('src_R/scikitlearn/fit_randomForest.R')
     }
     if(langage()=='R'){
+      data=data_preproc0()
       target=input$target
       source(paste0('src_R/',input$implementation,'.R'), local = T)          # ==> mdl
     }
@@ -290,15 +334,101 @@ shinyServer(function(input, output, session) {
     out <- NULL
     print(input$nav)
     if(input$nav=="Choix de l'implémentation"){
-      
-      # out=list(aceEditor('editImplementation', input$implementation, mode='r', theme = 'ambiance'))
       ext='.py' ; if(langage()=='R') ext='.R'
       fileName <- paste0('src_',langage(),'/',input$implementation,ext)
-      print(fileName)
       script=readChar(fileName, file.info(fileName)$size)
-      out=list(aceEditor('editImplementation', script, mode=langage(), theme = 'ambiance'))
+      out=aceEditor('editImplementation', script, mode=langage(), theme = 'ambiance')
     }
     out
   })  
+
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  output$uiPreproc0 <- renderUI({
+    # 1er prétraitement (basique)
+    fileName <- 'src_python/preproc0.py'
+    script=readChar(fileName, file.info(fileName)$size)
+    ace <- aceEditor('editpreproc0', script, mode='python', theme = 'ambiance')
+    activer <- NULL
+    if((!is.null(input$to_drop))&(!is.null(input$dummies))) activer <- column(2,checkboxInput('okpreproc0','Activer'))
+
+    liste <- list(
+      column(6,uiOutput('uiDummies')), column(6,uiOutput('uiTo_drop')),
+      column(10,ace),
+      column(2,actionButton('save_script_preproc0','Enregistrer')),
+      activer
+    )
+  })
   
+  output$target_value_counts_avant_preproc <- DT::renderDataTable({
+    data=data_preproc0() ; target=input$target
+    datatable(data %>% group_by(!!as.symbol(target)) %>% summarise(n=n()), options = list(paging=F, searching=F, info=F), rownames = F)
+  })  
+  output$dt_y_train <- DT::renderDataTable({
+    y_train <- data_preprocessed()$y_train %>%
+      as_tibble %>% 
+      group_by(value) %>% summarise(n=n())
+    colnames(y_train)<-c(input$target,'Nb')
+    datatable(y_train, options = list(paging=F, searching=F, info=F), rownames = F)
+  })
+  output$dt_y_test <- DT::renderDataTable({
+    y_test <- data_preprocessed()$y_test %>%
+      as_tibble %>% 
+      group_by(value) %>% summarise(n=n())
+    colnames(y_test)<-c(input$target,'Nb')
+    datatable(y_test, options = list(paging=F, searching=F, info=F), rownames = F)
+  })
+  output$target_value_counts_apres_preproc <- renderUI({
+    liste=NULL
+    if(!is.null(input$okPreprocessing)) if(input$okPreprocessing){
+      y_test  <- data_preprocessed()$y_test %>% as_tibble
+      liste=list(
+        box(width = 5,
+            h5('Train set'),
+            dataTableOutput('dt_y_train')
+        ),
+        box(width = 5,
+            h5('Test set'),
+            dataTableOutput('dt_y_test')
+        )
+      )
+    }
+    liste
+  })  
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  output$uiPreprocessing <- renderUI({
+    # preprocessing
+    fileName <- 'src_python/preprocessing.py'
+    script=readChar(fileName, file.info(fileName)$size)
+    ace <- aceEditor('editPreprocessing', script, mode='python', theme = 'ambiance', maxLines = 18, autoScrollEditorIntoView=T)
+    dev <- "<h5><i>Cette application est en développement."
+    dev <- paste(dev,"Le preprocessing qui suit n'est disponible que pour une implémentation en Python du modèle choisi.</i></h5>")
+    liste <- list(
+      column(12,HTML(dev)),
+      column(10,ace),
+      column(2,actionButton('savePreprocessing','Enregistrer')),
+      column(2,checkboxInput('okPreprocessing','Activer'))
+    )
+  })
+
+  observe({
+    # ------------------------------------
+    input$save_script_preproc0
+    script='' ; if(!is.null(isolate(input$editpreproc0))) script=isolate(input$editpreproc0)
+    dossier <- paste0('src/',applisession())
+    if(!dir.exists(dossier)) dir.create(dossier, recursive = T)
+    writeLines(script,paste0(dossier,'/preproc0.py'))
+
+    # ------------------------------------
+    input$savePreprocessing
+    script='' ; if(!is.null(isolate(input$editPreprocessing))) script=isolate(input$editPreprocessing)
+    dossier <- paste0('src/',applisession())
+    if(!dir.exists(dossier)) dir.create(dossier, recursive = T)
+    writeLines(script,paste0(dossier,'/preprocessing.py'))
+    
+  })
+  
+  applisession <- reactive({
+    validate( need(!is.null(input$modele), '...') )
+    paste0(input$dossier,'/',input$fichier,'/',input$modele)
+  })
 })

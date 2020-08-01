@@ -14,19 +14,8 @@ library(shinyEffects)
 
 library(shinyAce)
 
+library(lubridate)
+
 
 pafexemples='exemples'
 pafdata='data'
-
-# ==========================================================================================
-# TO DO
-
-# 1) upload fichiers utilisateurs. Fait
-
-# 2) modeles proposés : 
-# lecture dans un fichier .csv fait
-
-# 3) scripts .py et .R standardisés
-  
-# ==========================================================================================
-
