@@ -3,6 +3,13 @@
 erreurPreprocessing <- reactiveVal()
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
+sortie_erreur <- reactive({
+  list(
+    h5('Le script python renvoie une erreur :'),
+    h5(as.character(erreurPreprocessing()))
+  )
+})
+# ---------------------------------------------------------------------------------------------------------------------------------------------------
 output$editPreprocessing <- renderUI({
   input$annulerPreprocessing
   activer=isChurn() ; if(!is.null(input$okPreprocessing)) activer=input$okPreprocessing
@@ -36,10 +43,7 @@ output$counts_apres <- renderUI({
         box(width = 3, dataTableOutput('dt_y_test'))
       )
     }else{
-      liste=list(
-        h5('Le script python renvoie une erreur :'),
-        h5(as.character(erreurPreprocessing()))
-      )
+      liste <- sortie_erreur()
     }
   }
   liste
@@ -51,30 +55,40 @@ pyth_preprocessing <- reactive({
   data <- data_preproc0() ; target <- input$target
   names(data)=regulariserNomsColonnes(names(data)) ; target=regulariserNomsColonnes(target)
   
-  res <- NULL
+  data_preprocessed <- NULL
   if(input$okPreprocessing){
     print('')
     print('===================================')
     print('preprocessing python...')
     
-    sortie <- tryCatch(
+    # -----------------------
+    # 1er passage sous python
+    erreurPreprocessing(NULL)
+    tryCatch(
       source_python(paste0('src/',applisession(),'/preprocessing.py')),
-      error = function(e) e
+      error = function(e){e ; erreurPreprocessing(e) }
     )
-    erreurPreprocessing(sortie)
-    if(!is.null(sortie)){
-      print('=========  sortie anormale =========')
-      print(sortie)
-      print('====================================')
-      return(NULL)
-    }
-    res <- preprocessingSet(data, target)
+    # erreurPreprocessing(sortie)
+    if(!is.null(erreurPreprocessing())) return(NULL)
+  
+    # ------------------------
+    # 2eme passage sous python
+    erreurPreprocessing(NULL)
+    tryCatch(
+      res <- preprocessingSet(data, target),
+      error = function(e){e ; erreurPreprocessing(e) }
+    )
+    # erreurPreprocessing(sortie)
+    if(!is.null(erreurPreprocessing())) return(NULL)
+
+    # -----    
+    # ouf !
     print('terminé')
     print('=> X_train, y_train, X_test, y_test')
     print('===================================')
+    data_preprocessed <- list(X_train=res[[1]], y_train=res[[2]], X_test=res[[3]], y_test=res[[4]])
   }
   
-  data_preprocessed <- NULL ; if(!is.null(res)) data_preprocessed <- list(X_train=res[[1]], y_train=res[[2]], X_test=res[[3]], y_test=res[[4]]) 
   data_preprocessed
 })
 
