@@ -18,4 +18,4 @@ def evaluation(model):
   plt.plot(N, train_score.mean(axis=1), label='train score')
   plt.plot(N, val_score.mean(axis=1), label='validation score')
   plt.legend()    
-  return plt.show()
+  return (confusion_matrix(y_test, ypred), plt.show())
