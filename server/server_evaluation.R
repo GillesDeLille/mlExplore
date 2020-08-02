@@ -5,8 +5,22 @@ output$uiEvaluation <- renderUI({
   script=readChar(fileName, file.info(fileName)$size)
   ace <- aceEditor('editprocedure_avaluation', script, mode='python', theme = 'ambiance')
   liste <- list(
-    column(10,ace)
-  )      
+    column(10, ace),
+    column(2, actionButton('save_script_eval','Enregistrer', value = input$okEval)),
+    column(2, checkboxInput('okEval','Activer', value = input$okEval))
+  )
+  if(!is.null(input$okEval)) if(input$okEval){
+    
+    source_python(paste0('src/',applisession(),'/procedure_evaluation.py'))
+    res <- evaluation(RandomForest)
+    print('=== RandomForest ===')
+    print(res[[1]])
+    
+    liste <- list(
+      liste,
+      h5("résultats de l'évaluation...")
+    )
+  }
   liste
 })
 
@@ -15,6 +29,7 @@ courbeGain <- reactive({
   listeModeles=c('randomForest')
   courbeOk <- ((input$implementation=='scikitlearn/randomForest')&(input$modele %in% listeModeles))
 })
+
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
 output$imageGain <- renderImage({
   validate( need(courbeGain(),'Courbe de gain cumulée à construire selon contexte') )

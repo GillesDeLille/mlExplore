@@ -5,6 +5,7 @@ dashboardPage(skin = 'green',
               dashboardHeader(title = "mlExplore", titleWidth=largeurBandeau),
               dashboardSidebar(
                 width=largeurBandeau,
+                
                 sidebarMenu(
                   id='menu',
                   getElement(tags, "div")(style = "font-size: 11px",
@@ -21,14 +22,17 @@ dashboardPage(skin = 'green',
                   # menuItem("Résultats", tabName = "resultats"),
                   menuItem('Eléments à avoir en tête',tabName = 'fiche1')
                 )
+                
               ),
               dashboardBody(tabItems(
+                
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "donnees", withMathJax(
                   setShadow(class = 'box'),
                   h5('Données disponibles'),
                   box(width=12, DT::dataTableOutput('donneesDisponibles'))
                 )),
+                
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "pretraitement", withMathJax(
                   tabsetPanel(#selected='Preprocessing',
@@ -36,33 +40,36 @@ dashboardPage(skin = 'green',
                       'Prétraitement basique',
                       uiOutput('uiPreproc0')
                     ),
+                    tabPanel('Preprocessing', uiOutput('uiPreprocessing')),
                     tabPanel(
-                      'Preprocessing',
-                      box(width=10, DT::dataTableOutput('target_value_counts_avant_preproc')),
-                      uiOutput('uiPreprocessing'),
-                      uiOutput('target_value_counts_apres_preproc')
-                    ),
-                    tabPanel(
-                      'Features prétraitées',
+                      'Données prétraitées',
                       hr(),
-                      box(width=12, DT::dataTableOutput('dtFeatures'))
+                      h5("Tirage de 15 lignes issues du premier prétaitement"),
+                      box(width=12, DT::dataTableOutput('dtFeatures0')),
+                      br(),hr(),
+                      downloadButton('downLoad_X_train',label = "X_train : Tirage de 15 lignes issues du préprocessing complet"),
+                      downloadButton('downLoad_y_train',label = "y_train : Tirage de 15 lignes issues du préprocessing complet")
                     )
                   )
                 )),
+                
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "evaluation", withMathJax(
                   uiOutput('uiEvaluation')
                 )),
+                
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "presentation", withMathJax(
                   uiOutput('uiPresentation'),
                   uiOutput('uiEditImplementation')
                 )),
+                
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "fiche1", withMathJax(
                   setShadow(class = 'box'),
                   column(2,br()),box(width=8, includeMarkdown('markdown/ml_fiche1.Rmd'))
                 ))
+                
                 # ------------------------------------------------------------------------------------------------------------------------------------
 
               ))

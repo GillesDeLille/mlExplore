@@ -55,8 +55,16 @@ mdl <- reactive({
     source(paste0('src_R/scikitlearn/fit_',input$modele,'.R'), local = T)  # ==> mdl
   }
   if(langage()=='R'){
-    data=data_preproc0()
-    target=input$target
+    target=regulariserNomsColonnes(input$target)
+    Ajustement_TrainSet_uniquement=T
+    if(Ajustement_TrainSet_uniquement){
+      y=tibble(y=y_train)
+      names(y)=target
+      data=X_train %>% bind_cols(y)
+    }else{
+      data=data_preproc0()
+      names(data)=regulariserNomsColonnes(names(data))
+    }
     source(paste0('src_R/',input$implementation,'.R'), local = T)          # ==> mdl
   }
   
