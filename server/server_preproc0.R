@@ -1,27 +1,69 @@
 
+# ===========================
+# 1er prétraitement (basique)
+# ===========================
+
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
-data_preproc0 <- reactive({
-  data=donnees()
-  if(langage()=='python') data=pyth_preproc0()
-  if(langage()=='R')      data=r_preproc0()
-  data
+output$editPreproc0 <- renderUI({
+  input$annulerPreproc0
+  activer=isChurn() ; if(!is.null(input$okPreproc0)) activer=input$okPreproc0
+  
+  ed <- editeur('Preproc0', 'python', 30, activer=activer, initScript=(is.null(input$okPreproc0)))
 })
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
-# 1er Pretraitement des données par python
-# Renvoie un tableau contenant features et target
+output$uiPreproc0 <- renderUI({
+  factors=donnees() %>% select_if(is.character) %>% names()
+  sel=NULL ; if(length(setdiff(c("Int'l Plan", 'VMail Plan'),factors))==0){ sel=c("Int'l Plan", 'VMail Plan') }
+  uiDummies <- selectInput('dummies','Dummies',choices = factors, selected = sel, multiple = T)
+  
+  colonnes=donnees() %>% names()
+  sel=NULL ; if(length(setdiff(c('State', 'Area Code', 'Phone'),colonnes))==0){ sel=c('State', 'Area Code', 'Phone') }
+  uiTo_drop <- selectInput('to_drop','colonnes à retirer',choices = colonnes, selected = sel, multiple = T)
+  
+  list(
+    column(6,uiDummies), column(6,uiTo_drop),
+    uiOutput('editPreproc0')
+  )
+})
+
+# ---------------------------------------------------------------------------------------------------------------------------------------------------
+observe({
+  # annuler tous les changements opérés sur le script
+  input$annulerPreproc0
+  initScript('Preproc0','python')
+})
+
+observe({
+  # sauver
+  input$okPreproc0
+  script='' ; if(!is.null(isolate(input$editPreproc0))) script=isolate(input$editPreproc0)
+  writeLines(script,paste0(dossier_src(),'/preproc0.py'))
+})
+
+# ---------------------------------------------------------------------------------------------------------------------------------------------------
+# Renvoie un tableau contenant features et target,
+# reconstitué avec des indicatrices (dummies) et débarassé des colonnes à retirer
 pyth_preproc0 <- reactive({
   data=donnees()
   print('=====================================')
   print('Prétraitement des données avec pandas')
   print('=> liste (features, target)')
   print('=====================================')
-  # ----------------------------------------------------------------------------------------------------------------    
-  # 1er Pretraitement - basique : choix dans l'interface des variables indicatrices (dummies) et de celles à retirer
-  if(!is.null(input$okpreproc0)) if(input$okpreproc0){
+  if(!is.null(input$okPreproc0)) if(input$okPreproc0){
     source_python('src_python/util.py')
-    source_python(paste0('src/',applisession(),'/preproc0.py'))
-    print('!!! toto !!!')
+    
+    sortie <- tryCatch(
+      source_python(paste0('src/',applisession(),'/preproc0.py')),
+      error = function(e) e
+    )
+    if(!is.null(sortie)){
+      print('=========  sortie anormale =========')
+      print(sortie)
+      print('====================================')
+      return(NULL)
+    }
+    
     toDrop='' ; if(!is.null(input$to_drop)){ toDrop=input$to_drop }
     dummies='' ; if(!is.null(input$dummies)){ dummies=input$dummies }
     data=prepare_data(
@@ -31,19 +73,13 @@ pyth_preproc0 <- reactive({
       pafexemples=paste0(input$dossier,'/')
     )
   }
-  
-  print('============')
-  print(head(data))
   data
 })
 
 # --------------------------------------------------------------------------------
-# Pretraitement des données par R (je m'applique ici à fournir les données au bon format pour ranger)
-# Renvoie un tibble contenant features et target
-# Avec des noms de colonnes valides...
+# 1er Pretraitement - basique : Renvoie un tibble contenant features et target,
+# reconstitué avec des indicatrices (dummies) et débarassé des colonnes à retirer
 r_preproc0 <- reactive({
-  validate( need(!is.null(input$target), 'Choisir une target') )
-  
   print('====================================')
   print('Prétraitement des données avec dplyr')
   print('=> tibble (features, target)')
@@ -53,8 +89,7 @@ r_preproc0 <- reactive({
   }else{
     donnees=fread(paste0(input$dossier,'/',input$fichier), drop = input$to_drop, stringsAsFactors = T)
   }
-  names(donnees)=regulariserNomsColonnes(names(donnees))
-  if(!is.null(input$dummies)) donnees <- one_hot(donnees, input$dummies %>% regulariserNomsColonnes())
+  if(!is.null(input$dummies)) donnees <- one_hot(donnees, input$dummies)
   donnees
 })
 
