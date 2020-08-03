@@ -6,9 +6,10 @@
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
 output$editPreproc0 <- renderUI({
   input$annulerPreproc0
-  activer=isChurn() ; if(!is.null(input$okPreproc0)) activer=input$okPreproc0
+  validerPreproc0=NULL ; if(!is.null(isolate(input$activerPreproc0))){ validerPreproc0=isolate(input$activerPreproc0) }
+  activer=isChurn() ; if(!is.null(validerPreproc0)) activer=validerPreproc0
   
-  ed <- editeur('Preproc0', 'python', 30, activer=activer, initScript=(is.null(input$okPreproc0)))
+  ed <- editeur('Preproc0', 'python', 30, activer=activer, initScript=(is.null(validerPreproc0)))
 })
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -40,6 +41,13 @@ observe({
   script='' ; if(!is.null(isolate(input$editPreproc0))) script=isolate(input$editPreproc0)
   writeLines(script,paste0(dossier_src(),'/preproc0.py'))
 })
+
+observe({
+  # # des modifs sont observées dans le script ? => désactiver
+  input$editPreproc0
+  updateCheckboxInput(session, 'activerPreproc0',  value = F)
+})
+
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
 # Renvoie un tableau contenant features et target,

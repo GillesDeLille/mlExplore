@@ -53,10 +53,7 @@ shinyServer(function(input, output, session) {
     ace <- aceEditor(paste0('edit',Objet), script, mode=langage, theme = 'ambiance', maxLines = mxl, autoScrollEditorIntoView=T)
     liste <- list(
       column(10,ace),
-      # column(2,actionButton(paste0('save',Objet),'Enregistrer')),
-      column(2,checkboxInput(paste0('ok',Objet),'Activer', value=activer)),
-      br(),br(),
-      br(),br(),
+      column(2,checkboxInput(paste0('activer',Objet),'Activer', value=activer)),
       column(2,actionButton(paste0('annuler',Objet),'Annuler changements'))
     )
   }

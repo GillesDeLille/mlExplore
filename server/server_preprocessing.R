@@ -11,10 +11,12 @@ sortie_erreur <- reactive({
 })
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
 output$editPreprocessing <- renderUI({
+  # input$validerPreprocessing
   input$annulerPreprocessing
-  activer=isChurn() ; if(!is.null(input$okPreprocessing)) activer=input$okPreprocessing
+  validerPreprocessing=NULL ; if(!is.null(isolate(input$activerPreprocessing))){ validerPreprocessing=isolate(input$activerPreprocessing) }
+  activer=isChurn() ; if(!is.null(validerPreprocessing)) activer=validerPreprocessing
   
-  ed <- editeur(Objet='Preprocessing', langage='python', mxl=30, activer=activer, initScript=(is.null(input$okPreprocessing)))
+  ed <- editeur(Objet='Preprocessing', langage='python', mxl=30, activer=activer, initScript=(is.null(validerPreprocessing)))
 })
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -34,7 +36,7 @@ output$uiPreprocessing <- renderUI({
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
 output$counts_apres <- renderUI({
   liste=NULL
-  if(!is.null(input$okPreprocessing)) if(input$okPreprocessing){
+  if(!is.null(input$activerPreprocessing)) if(input$activerPreprocessing){
     data_preprocessed <- data_preprocessed()
     if(!is.null(data_preprocessed)){
       y_test  <- data_preprocessed()$y_test %>% as_tibble
@@ -56,7 +58,7 @@ pyth_preprocessing <- reactive({
   names(data)=regulariserNomsColonnes(names(data)) ; target=regulariserNomsColonnes(target)
   
   data_preprocessed <- NULL
-  if(input$okPreprocessing){
+  if(input$activerPreprocessing){
     print('')
     print('===================================')
     print('preprocessing python...')
@@ -112,14 +114,20 @@ output$dt_y_test <- DT::renderDataTable({
 observe({
   # # annuler tous les changements opérés sur le script
   input$annulerPreprocessing
-  initScript('Preprocessing','python')
+  # on demandera confirmation !!!
+    initScript('Preprocessing','python')
 })
 
 observe({
   # sauver
-  input$okPreprocessing
-  script='' ; if(!is.null(isolate(input$editPreprocessing))) script=isolate(input$editPreprocessing)
-  writeLines(script,paste0(dossier_src(),'/preprocessing.py'))
+  input$activerPreprocessing
+    script='' ; if(!is.null(isolate(input$editPreprocessing))) script=isolate(input$editPreprocessing)
+    writeLines(script,paste0(dossier_src(),'/preprocessing.py'))
 })
 
+observe({
+  # # des modifs sont observées dans le script ? => désactiver
+  input$editPreprocessing
+  updateCheckboxInput(session, 'activerPreprocessing',  value = F)
+})
 
