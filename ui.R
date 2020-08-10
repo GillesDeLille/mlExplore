@@ -44,11 +44,11 @@ dashboardPage(skin = 'green',
                     tabPanel(
                       'Données prétraitées',
                       hr(),
-                      h5("Tirage de 15 lignes issues du premier prétaitement"),
+                      h5("Tirage de 15 lignes obtenues après le premier prétaitement"),
                       box(width=12, DT::dataTableOutput('dtFeatures0')),
                       br(),hr(),
-                      downloadButton('downLoad_X_train',label = "X_train : Tirage de 15 lignes issues du préprocessing complet"),
-                      downloadButton('downLoad_y_train',label = "y_train : Tirage de 15 lignes issues du préprocessing complet")
+                      column(6,downloadButton('downLoad_X_train',label = "Tirage de 15 lignes obtenues après le préprocessing complet")),
+                      column(6,checkboxInput('ok_avec_y','Variable cible dans les données'))
                     )
                   )
                 )),

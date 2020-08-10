@@ -58,16 +58,14 @@ pyth_preproc0 <- reactive({
   print('Prétraitement des données avec pandas')
   print('=> liste (features, target)')
   print('=====================================')
-  if(!is.null(input$okPreproc0)) if(input$okPreproc0){
+  if(!is.null(input$activerPreproc0)) if(input$activerPreproc0){
     source_python('src_python/util.py')
     
-    sortie <- tryCatch(
-      source_python(paste0('src/',applisession(),'/preproc0.py')),
-      error = function(e) e
-    )
-    if(!is.null(sortie)){
+    res <- executer('preproc0.py')
+
+    if(!is.null(erreurScript())){
       print('=========  sortie anormale =========')
-      print(sortie)
+      print(erreurScript())
       print('====================================')
       return(NULL)
     }

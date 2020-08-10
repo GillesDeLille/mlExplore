@@ -4,6 +4,13 @@
 from sklearn.metrics import f1_score, confusion_matrix, classification_report
 from sklearn.model_selection import learning_curve
 
+dict_of_models = {
+  'RandomForest': RandomForest,
+     'AdaBoost' : AdaBoost,
+           'SVM': SVM,
+           'KNN': KNN
+}
+
 def evaluation(model):
   model.fit(X_train, y_train)
   ypred = model.predict(X_test)

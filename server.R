@@ -66,6 +66,26 @@ shinyServer(function(input, output, session) {
     if(!dir.exists(dossier_src())) dir.create(dossier_src(), recursive = T)
     file.copy(file_name,script_name, overwrite = T)
   }
+
+  # ---------------------------------------------------------------------------------------------------------------------------------------------------
+  erreurScript <- reactiveVal()
+  
+  # --------------------------------------------------------------------------------
+  executer<-function(script){
+    ext=unlist(strsplit(script,'[.]'))[2]
+    python <- ext=='py'
+    if(python){
+      print('============================================')
+      print(paste('Exécution du script : ', script, '...'))
+      erreurScript(NULL)
+      res <- tryCatch(
+        source_python(paste0('src/', applisession(),'/', script)),
+        error = function(e){e ; erreurScript(e) }
+      )
+      print('============================================')
+    }
+    res
+  }
   
   # --------------------------------------------------------------------------------
   regulariserNomsColonnes <- function(noms){ str_replace_all(string = noms, pattern = " |'", replacement = '.') }

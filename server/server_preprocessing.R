@@ -3,7 +3,7 @@
 erreurPreprocessing <- reactiveVal()
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
-sortie_erreur <- reactive({
+affichage_erreurPreprocessing <- reactive({
   list(
     h5('Le script python renvoie une erreur :'),
     h5(as.character(erreurPreprocessing()))
@@ -45,7 +45,7 @@ output$counts_apres <- renderUI({
         box(width = 3, dataTableOutput('dt_y_test'))
       )
     }else{
-      liste <- sortie_erreur()
+      liste <- affichage_erreurPreprocessing()
     }
   }
   liste
@@ -70,7 +70,6 @@ pyth_preprocessing <- reactive({
       source_python(paste0('src/',applisession(),'/preprocessing.py')),
       error = function(e){e ; erreurPreprocessing(e) }
     )
-    # erreurPreprocessing(sortie)
     if(!is.null(erreurPreprocessing())) return(NULL)
   
     # ------------------------
