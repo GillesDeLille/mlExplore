@@ -11,10 +11,9 @@ affichage_erreurPreprocessing <- reactive({
 })
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
 output$editPreprocessing <- renderUI({
-  # input$validerPreprocessing
   input$annulerPreprocessing
   validerPreprocessing=NULL ; if(!is.null(isolate(input$activerPreprocessing))){ validerPreprocessing=isolate(input$activerPreprocessing) }
-  activer=isChurn() ; if(!is.null(validerPreprocessing)) activer=validerPreprocessing
+  activer=FALSE ; if(!is.null(validerPreprocessing)) activer=validerPreprocessing
   
   ed <- editeur(Objet='Preprocessing', langage='python', mxl=30, activer=activer, initScript=(is.null(validerPreprocessing)))
 })
@@ -55,7 +54,7 @@ output$counts_apres <- renderUI({
 # Preprocessing (python uniquement pour commencer)
 pyth_preprocessing <- reactive({
   data <- data_preproc0() ; target <- input$target
-  names(data)=regulariserNomsColonnes(names(data)) ; target=regulariserNomsColonnes(target)
+  # names(data)=regulariserNomsColonnes(names(data)) ; target=regulariserNomsColonnes(target)
   
   data_preprocessed <- NULL
   if(input$activerPreprocessing){
@@ -70,7 +69,9 @@ pyth_preprocessing <- reactive({
       source_python(paste0('src/',applisession(),'/preprocessing.py')),
       error = function(e){e ; erreurPreprocessing(e) }
     )
-    if(!is.null(erreurPreprocessing())) return(NULL)
+    print('Definition des fonctions')
+    if(!is.null(isolate(erreurPreprocessing()))) print(paste('  sortie en erreur :',isolate(erreurPreprocessing())))
+    if(!is.null(isolate(erreurPreprocessing()))) return(NULL)
   
     # ------------------------
     # 2eme passage sous python
@@ -80,7 +81,9 @@ pyth_preprocessing <- reactive({
       error = function(e){e ; erreurPreprocessing(e) }
     )
     # erreurPreprocessing(sortie)
-    if(!is.null(erreurPreprocessing())) return(NULL)
+    print('Appel au(x) fonction(s)')
+    if(!is.null(isolate(erreurPreprocessing()))) print(paste('  sortie en erreur :',isolate(erreurPreprocessing())))
+    if(!is.null(isolate(erreurPreprocessing()))) return(NULL)
 
     # -----    
     # ouf !
@@ -90,6 +93,12 @@ pyth_preprocessing <- reactive({
     data_preprocessed <- list(X_train=res[[1]], y_train=res[[2]], X_test=res[[3]], y_test=res[[4]])
   }
   
+  print('=====================================================')
+  print('Nom des colonnes en sortie du preprocessing complet :')
+  print('(X_train)')
+  print(colnames(res[[1]]))
+  print('=====================================================')
+
   data_preprocessed
 })
 
