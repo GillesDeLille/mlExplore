@@ -12,7 +12,7 @@ dashboardPage(skin = 'green',
                     column(5, selectInput('dossier', 'Dossier', choices = c(pafexemples,pafdata))), column(7,uiOutput('uiFichiers')),
                     column(9,fileInput('infile', 'uploader des données')), column(3, checkboxInput('header', 'Header', value = T)),
                     column(12,uiOutput('uiTarget')),
-                    uiOutput('uiModeles')#, uiOutput('uiModeleValide'),
+                    uiOutput('uiModeles'),
                     
                   ),
                   menuItem('Données',tabName = 'donnees'),
