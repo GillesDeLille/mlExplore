@@ -8,8 +8,8 @@ output$editPreproc0 <- renderUI({
   input$annulerPreproc0
   validerPreproc0=NULL ; if(!is.null(isolate(input$activerPreproc0))){ validerPreproc0=isolate(input$activerPreproc0) }
   activer=isChurn() ; if(!is.null(validerPreproc0)) activer=validerPreproc0
-  
-  ed <- editeur('Preproc0', 'python', 30, activer=activer, initScript=(is.null(validerPreproc0)))
+
+  ed <- editeur('Preproc0', langage='python', 30, activer=activer, initScript=(is.null(validerPreproc0)))
 })
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -54,14 +54,14 @@ observe({
 # reconstitué avec des indicatrices (dummies) et débarassé des colonnes à retirer
 pyth_preproc0 <- reactive({
   data=donnees()
-  print('=====================================')
-  print('Prétraitement des données avec pandas')
-  print('=> liste (features, target)')
-  print('=====================================')
+  print('==================================================================================================')
+  print('                            Prétraitement des données avec pandas')
+  print('==================================================================================================')
   if(!is.null(input$activerPreproc0)) if(input$activerPreproc0){
     source_python('src_python/util.py')
-    
-    res <- executer('preproc0.py')
+
+    script <- 'preproc0.py'
+    res <- executer(script)
 
     if(!is.null(erreurScript())){
       print('=========  sortie anormale =========')
@@ -70,14 +70,20 @@ pyth_preproc0 <- reactive({
       return(NULL)
     }
     
-    toDrop='' ; if(!is.null(input$to_drop)){ toDrop=input$to_drop }
-    dummies='' ; if(!is.null(input$dummies)){ dummies=input$dummies }
+    toDrop=NULL ; if(!is.null(input$to_drop)){ toDrop=input$to_drop }
+    dummies=NULL ; if(!is.null(input$dummies)){ dummies=input$dummies }
+    
     data=prepare_data(
       input$fichier,
       dummies=dummies,
       to_drop=toDrop,
       pafexemples=paste0(input$dossier,'/')
     )
+
+    print('...ok')
+    print(colnames(data))
+    print('============================')
+    print('==================================================================================================')
   }
   data
 })
