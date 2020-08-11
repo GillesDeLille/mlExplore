@@ -30,13 +30,20 @@ def imputation(data):
 def preprocessing(data, target):
   data = encodage(data)
   # data = feature_engineering(data)
-  # data = imputation(data)
+  data = imputation(data)
   X = data.drop(target, axis=1)
   y = data[target]
   # print(y.value_counts())
   return X, y
 
 def preprocessingSet(data,target):
+  # Creation sous-ensembles (suite au EDA)
+  missing_rate = data.isna().sum()/data.shape[0]
+  blood_columns = list(data.columns[(missing_rate < 0.9) & (missing_rate >0.88)])
+  viral_columns = list(data.columns[(missing_rate < 0.80) & (missing_rate > 0.75)])
+  key_columns = ['Patient age quantile', 'SARS-Cov-2 exam result']
+  data = data[key_columns + blood_columns + viral_columns]
+  # -------------------------------------
   trainset, testset = train_test_split(data, test_size=0.2, random_state=0)
   X_train, y_train = preprocessing(trainset, target)
   X_test, y_test = preprocessing(testset, target)
