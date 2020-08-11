@@ -11,20 +11,24 @@ dashboardPage(skin = 'green',
                   getElement(tags, "div")(style = "font-size: 11px",
                     column(5, selectInput('dossier', 'Dossier', choices = c(pafexemples,pafdata))), column(7,uiOutput('uiFichiers')),
                     column(9,fileInput('infile', 'uploader des données')), column(3, checkboxInput('header', 'Header', value = T)),
-                    column(12,uiOutput('uiTarget')),
-                    uiOutput('uiModeles'),
-                    
+                    uiOutput('uiTarget')
                   ),
+                  menuItem('Descritption des modèles',tabName = 'description'),
                   menuItem('Données',tabName = 'donnees'),
                   menuItem('Prétraitement',tabName = 'pretraitement'),
                   menuItem('Evaluation',tabName = 'evaluation'),
                   menuItem('Présentation des modèles',tabName = 'presentation'),
-                  # menuItem("Résultats", tabName = "resultats"),
                   menuItem('Eléments à avoir en tête',tabName = 'fiche1')
                 )
                 
               ),
               dashboardBody(tabItems(
+                
+                # ------------------------------------------------------------------------------------------------------------------------------------
+                tabItem(tabName = "description",
+                  uiOutput('uiModeles'),
+                  uiOutput('uiDescription')
+                ),
                 
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "donnees", withMathJax(

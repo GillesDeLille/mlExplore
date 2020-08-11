@@ -61,8 +61,8 @@ shinyServer(function(input, output, session) {
   initScript <- function(Objet, langage){
     file_name=paste0('src_',langage,'/',tolower(Objet),'.py')
     script_name=paste0(dossier_src(),'/',tolower(Objet),'.py')
-    print('============================================')
-    print(paste('Init :', file_name, '==>', script_name))
+    # print('============================================')
+    # print(paste('Init :', file_name, '==>', script_name))
     if(!dir.exists(dossier_src())) dir.create(dossier_src(), recursive = T)
     file.copy(file_name,script_name, overwrite = T)
   }

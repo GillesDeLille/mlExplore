@@ -95,7 +95,10 @@ pyth_preprocessing <- reactive({
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
 output$counts_avant <- DT::renderDataTable({
-  target=input$target ; data=data_preproc0() %>% group_by(!!as.symbol(target)) %>% summarise(n=n())
+  target=input$target
+  data=data_preproc0() %>% group_by(!!as.symbol(target))
+  data=data %>% summarise(n=n())
+  # ??? `summarise()` ungrouping output (override with `.groups` argument)
   datatable(data, caption = 'Data set' , options = list(paging=F, searching=F, info=F), rownames = F)
 })  
 

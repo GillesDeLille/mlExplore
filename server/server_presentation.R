@@ -1,4 +1,5 @@
 
+
 output$uiPresentation <- renderUI({
   impl=fread('implementations.csv')
   choix_implementations=impl[modele==input$modele]$implementation
@@ -9,12 +10,6 @@ output$uiPresentation <- renderUI({
   navbarPage(
     id = 'nav',
     title = input$modele,
-    tabPanel(
-      id='presentation', title = 'Description',
-      setShadow(class = 'box'),
-      column(2,br()), box(width=8, includeMarkdown(paste0('markdown/',input$modele,'.Rmd'))), column(2, br()),
-      column(6,uiOutput('uiModeleValidite'))
-    ),
     tabPanel(
       id='choixImplementation',
       title = "Choix de l'implémentation", 

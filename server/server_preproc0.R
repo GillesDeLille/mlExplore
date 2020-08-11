@@ -81,8 +81,8 @@ pyth_preproc0 <- reactive({
     )
 
     print('...ok')
+    print('Nom des colonnes en sortie du pretraitement :')
     print(colnames(data))
-    print('============================')
     print('==================================================================================================')
   }
   data

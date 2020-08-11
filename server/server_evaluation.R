@@ -11,21 +11,27 @@ affichage_erreurEvaluation <- reactive({
 })
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
-output$uiEvaluation <- renderUI({
+output$editEvaluation <- renderUI({
   input$annulerProcedure_evaluation
   validerProcedure_evaluation=NULL ; if(!is.null(isolate(input$activerProcedure_evaluation))){ validerProcedure_evaluation=isolate(input$activerProcedure_evaluation) }
-  activer=isChurn() ; if(!is.null(validerProcedure_evaluation)) activer=validerProcedure_evaluation
-  
+  # activer=isChurn()
+  activer=FALSE
+  if(!is.null(validerProcedure_evaluation)) activer=validerProcedure_evaluation
+
   ed <- editeur('Procedure_evaluation', 'python', 30, activer=activer, initScript=(is.null(validerProcedure_evaluation)))
-  
-  
+})
+
+# ---------------------------------------------------------------------------------------------------------------------------------------------------
+output$uiEvaluation <- renderUI({
+
   resultats <- NULL
   if(!is.null(input$activerProcedure_evaluation)) if(input$activerProcedure_evaluation){
     resultats <- uiOutput('resultatEvaluation')
+    save(resultats, file='~/resultats_eval.rdata')
   }
   liste <- list(
-    column(10, ed),
-    resultats
+    column(10, uiOutput('editEvaluation'))
+    # ,resultats
   )
 })
 

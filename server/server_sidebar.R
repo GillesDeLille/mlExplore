@@ -26,12 +26,12 @@ output$uiFichiers <- renderUI({
 output$uiTarget <- renderUI({
   colonnes=donnees() %>% names()
   sel=NULL ; if('Churn' %in% colonnes){ sel='Churn' }
-  selectInput('target', 'Target', choices = colonnes, selected = sel)
+  selectInput('target', 'Target', choices = colonnes, selected = sel, width = '75%')
 })
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
 output$uiModeles <- renderUI({
   impl=fread('implementations.csv')
   liste_modeles=impl$modele %>% unique()
-  selectInput('modele','Modèle à appliquer', choices = liste_modeles)
+  selectInput('modele','Modèles disponibles', choices = liste_modeles)
 })
