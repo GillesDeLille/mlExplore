@@ -4,15 +4,6 @@
 # ===========================
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
-output$editPreproc0 <- renderUI({
-  input$annulerPreproc0
-  validerPreproc0=NULL ; if(!is.null(isolate(input$activerPreproc0))){ validerPreproc0=isolate(input$activerPreproc0) }
-  activer=isChurn() ; if(!is.null(validerPreproc0)) activer=validerPreproc0
-
-  ed <- editeur('Preproc0', langage='python', 30, activer=activer, initScript=(is.null(validerPreproc0)))
-})
-
-# ---------------------------------------------------------------------------------------------------------------------------------------------------
 output$uiPreproc0 <- renderUI({
   factors=donnees() %>% select_if(is.character) %>% names()
   sel=NULL ; if(length(setdiff(c("Int'l Plan", 'VMail Plan'),factors))==0){ sel=c("Int'l Plan", 'VMail Plan') }
@@ -23,45 +14,33 @@ output$uiPreproc0 <- renderUI({
   uiTo_drop <- selectInput('to_drop','colonnes à retirer',choices = colonnes, selected = sel, multiple = T)
   
   list(
-    column(6,uiDummies), column(6,uiTo_drop),
+    column(4,uiDummies), column(4,uiTo_drop), column(4,selectInput('encoding', 'Enconding', choices = c('','ISO-8859-1'))),
     uiOutput('editPreproc0')
   )
 })
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
-observe({
-  # annuler tous les changements opérés sur le script
+output$editPreproc0 <- renderUI({
   input$annulerPreproc0
-  initScript('Preproc0','python')
-})
+  validerPreproc0=NULL ; if(!is.null(isolate(input$activerPreproc0))){ validerPreproc0=isolate(input$activerPreproc0) }
+  activer=isChurn() ; if(!is.null(validerPreproc0)) activer=validerPreproc0
 
-observe({
-  # sauver
-  input$okPreproc0
-  script='' ; if(!is.null(isolate(input$editPreproc0))) script=isolate(input$editPreproc0)
-  writeLines(script,paste0(dossier_src(),'/preproc0.py'))
+  ed <- editeur('Preproc0', langage='python', 30, activer=activer, initScript=(is.null(validerPreproc0)))
 })
-
-observe({
-  # # des modifs sont observées dans le script ? => désactiver
-  input$editPreproc0
-  updateCheckboxInput(session, 'activerPreproc0',  value = F)
-})
-
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
 # Renvoie un tableau contenant features et target,
 # reconstitué avec des indicatrices (dummies) et débarassé des colonnes à retirer
 pyth_preproc0 <- reactive({
-  data=donnees()
+  # data=donnees()
+
   print('==================================================================================================')
   print('                            Prétraitement des données avec pandas')
   print('==================================================================================================')
   if(!is.null(input$activerPreproc0)) if(input$activerPreproc0){
     source_python('src_python/util.py')
 
-    script <- 'preproc0.py'
-    res <- executer(script)
+    res <- executer('preproc0.py')
 
     if(!is.null(erreurScript())){
       print('=========  sortie anormale =========')
@@ -74,10 +53,12 @@ pyth_preproc0 <- reactive({
     dummies=NULL ; if(!is.null(input$dummies)){ dummies=input$dummies }
     
     data=prepare_data(
-      input$fichier,
+      data=NULL,
       dummies=dummies,
       to_drop=toDrop,
-      pafexemples=paste0(input$dossier,'/')
+      encoding=input$encoding,
+      fichier=input$fichier,
+      paf=paste0(input$dossier,'/')
     )
 
     print('...ok')
@@ -103,6 +84,26 @@ r_preproc0 <- reactive({
   }
   if(!is.null(input$dummies)) donnees <- one_hot(donnees, input$dummies)
   donnees
+})
+
+# ---------------------------------------------------------------------------------------------------------------------------------------------------
+observe({
+  # annuler tous les changements opérés sur le script
+  input$annulerPreproc0
+  initScript('Preproc0','python')
+})
+
+observe({
+  # sauver
+  input$okPreproc0
+  script='' ; if(!is.null(isolate(input$editPreproc0))) script=isolate(input$editPreproc0)
+  writeLines(script,paste0(dossier_src(),'/preproc0.py'))
+})
+
+observe({
+  # # des modifs sont observées dans le script ? => désactiver
+  input$editPreproc0
+  updateCheckboxInput(session, 'activerPreproc0',  value = F)
 })
 
 
