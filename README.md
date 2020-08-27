@@ -240,11 +240,9 @@ manières au projet) :
 
 **=\> Profiter de l’application directement à partir du lien suivant :**
 Version récente sur ShinyApps.io : cliquez sur ce lien
-[!ShinyApps.io](https://gillesdelille.shinyapps.io/mlExplore/)
+[mlExplore](https://gillesdelille.shinyapps.io/mlExplore/)
 
-**=\> Profiter de l’application directement à partir du lien suivant :**
-
-Version stable sur Spyrales : cliquez sur ce lien
+**=\> Profiter d’ne version plus ancienne mais stable sur Spyrales :**
 [![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/spyrales/la-piscine/master?urlpath=shiny/mlExplore/)
 
 L’appli met du temps à démarrer, mais normalement ça fonctionne ! (un
@@ -253,7 +251,7 @@ l’erreur 500 trop fréquente à mon goût…)
 
 **=\> ou alors installer l’appli sur votre machine (pas trop sorcier)**
 
-Pré-requis :
+Pré-requis à l’install :
 
 1.  Le logiciel R installé (évidemment). On en est à la version 4 depuis
     le 24 avril, mais une version antérieure devrait encore convenir
