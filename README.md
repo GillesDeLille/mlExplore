@@ -207,6 +207,9 @@ On peut commencer par…
 Proposer en première page une présentation succinte du domaine, si
 possible infographies (libres de droit) à l’appui.
 
+Parler de Machine LearnIA et de son auteur Guuillaume St Cirgue, puisque
+celui-ci m’a beaucoup inspiré, et parce qu’il le mérite !
+
 En bref, réserver un accueil plus chaleureux aux utilisateurs les plus
 novices.
 
