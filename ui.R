@@ -15,9 +15,7 @@ dashboardPage(skin = 'green',
                   ),
                   menuItem('Descritption des modèles',tabName = 'description'),
                   menuItem('Données',tabName = 'donnees'),
-                  menuItem('Prétraitement',tabName = 'pretraitement'),
-                  menuItem('Evaluation',tabName = 'evaluation'),
-                  menuItem('Présentation des modèles',tabName = 'presentation'),
+                  menuItem('Traitements & évaluation',tabName = 'traitements'),
                   menuItem('Eléments à avoir en tête',tabName = 'fiche1'),
                   menuItem('virtual env Python',tabName = 'venv_python')
                 )
@@ -44,36 +42,10 @@ dashboardPage(skin = 'green',
                 )),
                 
                 # ------------------------------------------------------------------------------------------------------------------------------------
-                tabItem(tabName = "pretraitement", withMathJax(
-                  tabsetPanel(#selected='Preprocessing',
-                    tabPanel(
-                      'Prétraitement basique',
-                      uiOutput('uiPreproc0')
-                    ),
-                    tabPanel('Preprocessing', uiOutput('uiPreprocessing')),
-                    tabPanel(
-                      'Données prétraitées',
-                      hr(),
-                      h5("Tirage de 15 lignes obtenues après le premier prétaitement"),
-                      box(width=12, DT::dataTableOutput('dtFeatures0')),
-                      br(),hr(),
-                      column(6,downloadButton('downLoad_X_train',label = "Tirage de 15 lignes obtenues après le préprocessing complet")),
-                      column(6,checkboxInput('ok_avec_y','Variable cible dans les données'))
-                    )
-                  )
-                )),
-                
-                # ------------------------------------------------------------------------------------------------------------------------------------
-                tabItem(tabName = "evaluation", withMathJax(
-                  uiOutput('uiEvaluation')
-                )),
-                
-                # ------------------------------------------------------------------------------------------------------------------------------------
-                tabItem(tabName = "presentation", withMathJax(
-                  uiOutput('uiPresentation'),
-                  uiOutput('uiEditImplementation')
-                )),
-                
+                tabItem(tabName = "traitements",
+                  uiOutput('uiTraitements')
+                ),
+
                 # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "fiche1", withMathJax(
                   setShadow(class = 'box'),
