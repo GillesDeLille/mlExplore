@@ -235,19 +235,12 @@ recommanderait pour l’approfondissement des différentes notions.
 Conseils pour le bon démarrage de l’application
 -----------------------------------------------
 
-Trois possibilités (toutes permettant de contribuer de différentes
+Deux possibilités (toutes permettant de contribuer de différentes
 manières au projet) :
 
-**=\> Profiter de l’application directement à partir du lien suivant :**
-Version récente sur ShinyApps.io : cliquez sur ce lien
+**=\> Profiter de l’application directement à partir du lien suivant
+(version récente sur ShinyApps.io) :**
 [mlExplore](https://gillesdelille.shinyapps.io/mlExplore/)
-
-**=\> Profiter d’ne version plus ancienne mais stable sur Spyrales :**
-[![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/spyrales/la-piscine/master?urlpath=shiny/mlExplore/)
-
-L’appli met du temps à démarrer, mais normalement ça fonctionne ! (un
-raffraîchissement de la page - touche F5 - est parfois utile suite à
-l’erreur 500 trop fréquente à mon goût…)
 
 **=\> ou alors installer l’appli sur votre machine (pas trop sorcier)**
 
