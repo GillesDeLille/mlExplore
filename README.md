@@ -320,10 +320,10 @@ Toujours sous R, j’ai fait comme ceci :
     conda_install("r-reticulate", "scikit-plot")
     conda_install("r-reticulate", "seaborn")
 
-Après avoir récupéré tous les scripts depuis mon dépôt (
-[gillesdelille](https://github.com/GillesDeLille/mlExplore) ) ou depuis
-[la-piscine](https://github.com/spyrales/la-piscine/) et utiliser le
-sytème de contrôle de version
+Après avoir récupéré tous les scripts depuis mon dépôt
+[gillesdelille](https://github.com/GillesDeLille/mlExplore) ou depuis
+[la-piscine](https://github.com/spyrales/la-piscine/) non sans profiter
+du système de contrôle de version
 [git](https://spyrales.netlify.app/blog/20200329-memogit/), déposer le
 dossier mlExplore
 
