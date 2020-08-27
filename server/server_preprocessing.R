@@ -55,33 +55,30 @@ output$counts_apres <- renderUI({
 pyth_preprocessing <- reactive({
   data <- data_preproc0() ; target <- input$target
   # names(data)=regulariserNomsColonnes(names(data)) ; target=regulariserNomsColonnes(target)
-  
+
   data_preprocessed <- NULL
   if(input$activerPreprocessing){
     print('')
     print('===================================')
     print('preprocessing python...')
     
-    # -----------------------
-    # 1er passage sous python
+    # ----------------------------------  
+    print('Definition des fonctions')
     erreurPreprocessing(NULL)
     tryCatch(
       source_python(paste0('src/',applisession(),'/preprocessing.py')),
       error = function(e){e ; erreurPreprocessing(e) }
     )
-    print('Definition des fonctions')
     if(!is.null(isolate(erreurPreprocessing()))) print(paste('  sortie en erreur :',isolate(erreurPreprocessing())))
     if(!is.null(isolate(erreurPreprocessing()))) return(NULL)
   
-    # ------------------------
-    # 2eme passage sous python
+    # ----------------------------------  
+    print('Appel au(x) fonction(s)')
     erreurPreprocessing(NULL)
     tryCatch(
       res <- preprocessingSet(data, target),
       error = function(e){e ; erreurPreprocessing(e) }
     )
-    # erreurPreprocessing(sortie)
-    print('Appel au(x) fonction(s)')
     if(!is.null(isolate(erreurPreprocessing()))) print(paste('  sortie en erreur :',isolate(erreurPreprocessing())))
     if(!is.null(isolate(erreurPreprocessing()))) return(NULL)
 
