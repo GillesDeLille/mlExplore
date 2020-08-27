@@ -320,10 +320,11 @@ Toujours sous R, j’ai fait comme ceci :
     conda_install("r-reticulate", "scikit-plot")
     conda_install("r-reticulate", "seaborn")
 
-Après avoir tout récupéré (le plus simple est de faire un fork depuis
+Après avoir récupéré tous les scripts depuis mon dépôt (
+[gillesdelille](https://github.com/GillesDeLille/mlExplore) ) ou depuis
 [la-piscine](https://github.com/spyrales/la-piscine/) et utiliser le
 sytème de contrôle de version
-[git](https://spyrales.netlify.app/blog/20200329-memogit/)), déposer le
+[git](https://spyrales.netlify.app/blog/20200329-memogit/), déposer le
 dossier mlExplore
 
 1.  dans ShinyApps/ si un serveur Shiny tourne sur votre machine locale
@@ -331,8 +332,8 @@ dossier mlExplore
     dans le dossier ShinyApps/)
 
 2.  sinon où bon vous semble pour le reconnaître ensuite dans vos
-    projets à partir de votre environnement de développement, disons …
-    Rstudio !
+    projets à partir de votre environnement de développement, disons
+    …Rstudio !
 
 C’est presque tout :
 
@@ -393,4 +394,4 @@ Plus vendeur, une image :
 
 Et puis une autre, l’interface ayant un peu évolué entre temps :
 
-![Le code python est affiché dans l’appli](mlExplore2.png)
+![Le code python est affiché dans l’appli](mlExplore3.png)
