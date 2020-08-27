@@ -1,5 +1,5 @@
 
-PYTHON_DEPENDENCIES = c('numpy', 'pandas', 'scipy', 'scikit-learn', 'matplotlib', 'seaborn')
+PYTHON_DEPENDENCIES = c('numpy', 'pandas', 'scipy', 'scikit-learn', 'matplotlib', 'seaborn', 'scikit-plot')
 
 library(reticulate)
 library(shinycssloaders)
