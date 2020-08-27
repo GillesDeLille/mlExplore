@@ -29,9 +29,3 @@ output$uiTarget <- renderUI({
   selectInput('target', 'Target', choices = colonnes, selected = sel, width = '75%')
 })
 
-# ---------------------------------------------------------------------------------------------------------------------------------------------------
-output$uiModeles <- renderUI({
-  impl=fread('implementations.csv')
-  liste_modeles=impl$modele %>% unique()
-  selectInput('modele','Modèles disponibles', choices = liste_modeles)
-})
