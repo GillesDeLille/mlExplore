@@ -1,6 +1,19 @@
 
 shinyServer(function(input, output, session) {
   
+  # ------------------ App virtualenv setup  ------------------- #
+  
+  pf = Sys.getenv('shinyapps_io')
+  if(pf=='oui'){
+    virtualenv_dir = Sys.getenv('VIRTUALENV_NAME')
+    python_path = Sys.getenv('PYTHON_PATH')
+    
+    # Create virtual env and install dependencies
+    reticulate::virtualenv_create(envname = virtualenv_dir, python = python_path)
+    reticulate::virtualenv_install(virtualenv_dir, packages = PYTHON_DEPENDENCIES)
+    reticulate::use_virtualenv(virtualenv_dir, required = T)
+  }
+
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   applisession <- reactive({
     # Renvoie une proposition de nom de dossier pour stocker les scripts mis au point par l'utilisateur.
@@ -98,4 +111,5 @@ shinyServer(function(input, output, session) {
   }
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
   # ---------------------------------------------------------------------------------------------------------------------------------------------------
+
 })

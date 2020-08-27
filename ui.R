@@ -18,16 +18,22 @@ dashboardPage(skin = 'green',
                   menuItem('Prétraitement',tabName = 'pretraitement'),
                   menuItem('Evaluation',tabName = 'evaluation'),
                   menuItem('Présentation des modèles',tabName = 'presentation'),
-                  menuItem('Eléments à avoir en tête',tabName = 'fiche1')
+                  menuItem('Eléments à avoir en tête',tabName = 'fiche1'),
+                  menuItem('virtual env Python',tabName = 'venv_python')
                 )
                 
               ),
               dashboardBody(tabItems(
                 
                 # ------------------------------------------------------------------------------------------------------------------------------------
+                tabItem(tabName = "venv_python",
+                  uiOutput('ui_venv_python')
+                ),
+                
+                # ------------------------------------------------------------------------------------------------------------------------------------
                 tabItem(tabName = "description",
-                  uiOutput('uiModeles'),
-                  uiOutput('uiDescription')
+                        uiOutput('uiModeles'),
+                        uiOutput('uiDescription')
                 ),
                 
                 # ------------------------------------------------------------------------------------------------------------------------------------
