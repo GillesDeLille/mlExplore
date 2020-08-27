@@ -21,11 +21,11 @@ Bien souvent, de nombreuses implémentations existent, sous R et sous Python pou
 
 Le but est de s'y retrouver tout en s'affranchissant de la barrière ...de la langue !
 
-Pour le modèle sélectionné, le choix d'une implémentation est proposé (si possible) :
+Pour le modèle sélectionné, le choix d'une implémentation est proposé avec (si possible) :
 
-- avec scikit-learn, donc en Python
+- scikit-learn, donc en Python
 
-- ou bien avec R + packages spécialisés
+- ou bien R + packages spécialisés
 
 
 ## De quoi s'agit-il vraiment ?
@@ -79,9 +79,9 @@ Une interface permettant de
 
 #### Choisir nos propres fichiers pour les soumettre au ML
 
-- Un fichier de données, livré pour l'exemple : churn2.csv
+- Deux fichiers de données, livrés pour l'exemple : churn2.csv et dataset_sarscov2.csv
 
-C'est lui qui est traité par défaut au démarrage de l'appli, en guise de validation du bon déroulement de chaque fonctionnalité de l'appli.
+C'est **churn2** qui est traité par défaut au démarrage de l'appli, en guise de validation du bon déroulement de chaque fonctionnalité de l'appli.
 
 - Tout fichier envoyé dans le dossier data (dans l'arborescence du projet), via un bouton **< upload >**
 
@@ -93,6 +93,8 @@ C'est lui qui est traité par défaut au démarrage de l'appli, en guise de vali
 
 Remarque au passage, je remercie lino.galiana@insee.fr et ses collègues pour leur très bon
 [article](https://linogaliana.netlify.app/post/datatable/datatable-intro/ "article") sur la librairie **data.table** et dont Spyrales à fait l'echo. Je développe (un peu) ce thème un peu plus bas, dans la rubrique *Point de vue du développeur*.
+
+- La possibilité de scripter (en python) et exécuter la phase de preprocessing
 
 #### Choisir le modèle à ajuster
 
@@ -112,6 +114,14 @@ On peut <span style="color: #FE446A;">*contrôler les scripts*</span> précis (R
 Cela pourra peut-être servir pour faciliter leur mise au point avec le concours des utilisateurs qui ne prendraient part au projet
 que (et c'est déjà beaucoup) au travers de l'interface.
 
+
+#### Editeur de texte (shinyAce)
+
+Des scripts modèles sont proposés à chaque étape.  
+L'utilisateur contrôle ce qui est fait : activer (ou pas) ici un script de preprocessing, là un script d'évaluation.  
+**La prise en compte des modifications des scripts python est effective.**
+Lorsque l'utilisateur modifie un script, la dernière version est stockée dans un dossier dans lequel on pourra tout retrouver : traitements, résultats, modèles ajustés.
+
 ### Du point de vue du développeur, qu'avons-nous appris/mis en oeuvre ?
 
 Langages de programmation
@@ -122,12 +132,17 @@ Langages de programmation
 Environnement de dev
 
 - Rstudio
-- ShinyApp
+- ShinyApps
 
 Bibliothèques
 
-- scikitlearn
+- numpy
+- scipy
+- matplotlib
+- scikit-learn
 - pandas
+- scikit-plot
+- seaborn
 
 Dans le détail du développement :
 
@@ -161,7 +176,7 @@ En bref, réserver un accueil plus chaleureux aux utilisateurs les plus novices.
 Faire apparaître clairement les **composantes** de ce monde **de l'apprentissage automatique** qui sont **prises en compte** dans
 la dernière version de l'application. On cherchera alors à faire bouger le curseur entre ce qui est fait et ce qu'il reste à faire
 
-Ajouter des références, des liens vers des sites que Spyrales recommanderait pour l'approfondissement de différentes notions.
+Ajouter des références, des liens vers des sites que Spyrales recommanderait pour l'approfondissement des différentes notions.
 
 ### Ajouter des modèles
 
@@ -171,14 +186,17 @@ Ajouter des références, des liens vers des sites que Spyrales recommanderait p
 
 ### Donner plus de possibilité aux utilisateurs
 
-- Prise en compte des modifications des scripts dans l'éditeur de texte (shinyAce)
 - Permettre la recherche des bons hyper-paramètres (gridSearchCV)
 - Définition des pipelines
 - ?
 
 ## Conseils pour le bon démarrage de l'application
 
-Deux possibilités :
+Trois possibilités (toutes permettant de contribuer de différentes manières au projet) :
+
+**=> Profiter de l'application directement à partir du lien suivant :**
+Version récente sur ShinyApps.io : cliquez sur ce lien 
+[!ShinyApps.io](https://gillesdelille.shinyapps.io/mlExplore/)
 
 **=> Profiter de l'application directement à partir du lien suivant :**
 
@@ -186,7 +204,7 @@ Version stable sur Spyrales : cliquez sur ce lien [![Binder](http://mybinder.org
 
 L'appli met du temps à démarrer, mais normalement ça fonctionne ! (un raffraîchissement de la page - touche F5 - est parfois utile suite à l'erreur 500 trop fréquente à mon goût...)
 
-**=> ou alors installer l'appli sur votre machine (dans l'idée à plus ou moins long terme de contribuer au projet)**
+**=> ou alors installer l'appli sur votre machine (pas trop sorcier)**
 
 Pré-requis :
 

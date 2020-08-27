@@ -11,16 +11,16 @@ Le but est de s’y retrouver tout en s’affranchissant de la barrière …de
 la langue !
 
 Pour le modèle sélectionné, le choix d’une implémentation est proposé
-(si possible) :
+avec (si possible) :
 
--   avec scikit-learn, donc en Python
+-   scikit-learn, donc en Python
 
--   ou bien avec R + packages spécialisés
+-   ou bien R + packages spécialisés
 
 De quoi s’agit-il vraiment ?
 ----------------------------
 
-### =&gt; Un outil pédagogique
+### =\> Un outil pédagogique
 
 Tout l’intérêt du projet ne se résume pas au produit final et
 certainement pas à ses capacités de calcul :
@@ -59,7 +59,7 @@ et les 2 langages qui ont réuni la communauté Spyrales.
 Le projet n’a donc pas vocation a être terminé un jour, ce serait
 tellement dommage (!)
 
-### =&gt; Un produit Spyrales
+### =\> Un produit Spyrales
 
 Quoi de plus enthousiasmant qu’un premier outil totalement maîtrisé par
 la communauté Spyrales puisque développé par elle et pour ses propres
@@ -78,13 +78,15 @@ Une interface permettant de
 
 #### Choisir nos propres fichiers pour les soumettre au ML
 
--   Un fichier de données, livré pour l’exemple : churn2.csv
+-   Deux fichiers de données, livrés pour l’exemple : churn2.csv et
+    dataset\_sarscov2.csv
 
-C’est lui qui est traité par défaut au démarrage de l’appli, en guise de
-validation du bon déroulement de chaque fonctionnalité de l’appli.
+C’est **churn2** qui est traité par défaut au démarrage de l’appli, en
+guise de validation du bon déroulement de chaque fonctionnalité de
+l’appli.
 
 -   Tout fichier envoyé dans le dossier data (dans l’arborescence du
-    projet), via un bouton **&lt; upload &gt;**
+    projet), via un bouton **\< upload \>**
 
 -   Le minimum syndical pour le <span
     style="color: #FE446A;">*preprocessing*</span> :
@@ -101,6 +103,9 @@ et ses collègues pour leur très bon
 sur la librairie **data.table** et dont Spyrales à fait l’echo. Je
 développe (un peu) ce thème un peu plus bas, dans la rubrique *Point de
 vue du développeur*.
+
+-   La possibilité de scripter (en python) et exécuter la phase de
+    preprocessing
 
 #### Choisir le modèle à ajuster
 
@@ -128,6 +133,16 @@ Cela pourra peut-être servir pour faciliter leur mise au point avec le
 concours des utilisateurs qui ne prendraient part au projet que (et
 c’est déjà beaucoup) au travers de l’interface.
 
+#### Editeur de texte (shinyAce)
+
+Des scripts modèles sont proposés à chaque étape.  
+L’utilisateur contrôle ce qui est fait : activer (ou pas) ici un script
+de preprocessing, là un script d’évaluation.  
+**La prise en compte des modifications des scripts python est
+effective.** Lorsque l’utilisateur modifie un script, la dernière
+version est stockée dans un dossier dans lequel on pourra tout retrouver
+: traitements, résultats, modèles ajustés.
+
 ### Du point de vue du développeur, qu’avons-nous appris/mis en oeuvre ?
 
 Langages de programmation
@@ -138,12 +153,17 @@ Langages de programmation
 Environnement de dev
 
 -   Rstudio
--   ShinyApp
+-   ShinyApps
 
 Bibliothèques
 
--   scikitlearn
+-   numpy
+-   scipy
+-   matplotlib
+-   scikit-learn
 -   pandas
+-   scikit-plot
+-   seaborn
 
 Dans le détail du développement :
 
@@ -196,7 +216,7 @@ dernière version de l’application. On cherchera alors à faire bouger le
 curseur entre ce qui est fait et ce qu’il reste à faire
 
 Ajouter des références, des liens vers des sites que Spyrales
-recommanderait pour l’approfondissement de différentes notions.
+recommanderait pour l’approfondissement des différentes notions.
 
 ### Ajouter des modèles
 
@@ -208,8 +228,6 @@ recommanderait pour l’approfondissement de différentes notions.
 
 ### Donner plus de possibilité aux utilisateurs
 
--   Prise en compte des modifications des scripts dans l’éditeur de
-    texte (shinyAce)
 -   Permettre la recherche des bons hyper-paramètres (gridSearchCV)
 -   Définition des pipelines
 -   ?
@@ -217,10 +235,14 @@ recommanderait pour l’approfondissement de différentes notions.
 Conseils pour le bon démarrage de l’application
 -----------------------------------------------
 
-Deux possibilités :
+Trois possibilités (toutes permettant de contribuer de différentes
+manières au projet) :
 
-**=&gt; Profiter de l’application directement à partir du lien suivant
-:**
+**=\> Profiter de l’application directement à partir du lien suivant :**
+Version récente sur ShinyApps.io : cliquez sur ce lien
+[!ShinyApps.io](https://gillesdelille.shinyapps.io/mlExplore/)
+
+**=\> Profiter de l’application directement à partir du lien suivant :**
 
 Version stable sur Spyrales : cliquez sur ce lien
 [![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/spyrales/la-piscine/master?urlpath=shiny/mlExplore/)
@@ -229,8 +251,7 @@ L’appli met du temps à démarrer, mais normalement ça fonctionne ! (un
 raffraîchissement de la page - touche F5 - est parfois utile suite à
 l’erreur 500 trop fréquente à mon goût…)
 
-**=&gt; ou alors installer l’appli sur votre machine (dans l’idée à plus
-ou moins long terme de contribuer au projet)**
+**=\> ou alors installer l’appli sur votre machine (pas trop sorcier)**
 
 Pré-requis :
 
@@ -242,22 +263,33 @@ Pré-requis :
     telle que  
     **Sys.setenv(http\_proxy = “xxxx”)**  
     peut aider dans global.R
+
 3.  Un certain nombre de librairies sont bien sûr nécessaires
 
 Pour les scripts R d’une part :
 
 -   reticulate (pour articuler R et Python)
+
 -   DT (pour afficher efficacement les tableaux de données)
+
 -   dplyr (pour les manipuler)
+
 -   readr (pour lire les fichiers csv, mais là je ne suis pas de très
     bon conseil)
+
 -   stringr (je l’utilise pour remettre dans le rang les noms de
     colonnes contenant des charactères exotiques)
+
 -   tictoc (pour mesurer les temps d’exécution, elle est tip top !)
+
 -   shinyEffects (pour faire joli)
+
 -   shinydashboard (parce que c’est beau)
+
 -   data.table (Spyrales en a parlé, alors…)
+
 -   mltools (bien pratique)
+
 -   shinyAce (pour afficher un éditeur de texte dans l’appli)
 
 -   ranger : le petit dernier pour faire du randomForest efficace sous
@@ -316,18 +348,18 @@ C’est presque tout :
 Option 1 : accédez classiquement depuis le navigateur à la page
 @ip/users/votreUser/mlExplore/
 
-Option 2 : sous Rstudio, -&gt; ouvrir le projet mlExplore.Rproj, puis au
-moins l’un des 3 fichiers : global.R, ui.R ou server.R -&gt; puis runApp
+Option 2 : sous Rstudio, -\> ouvrir le projet mlExplore.Rproj, puis au
+moins l’un des 3 fichiers : global.R, ui.R ou server.R -\> puis runApp
 
 Autre option : Installation et éxecution locale, en l’absence d’un
 serveur Shiny
 
--&gt; Pour lancer l’appli dans votre navigateur comme le ferait le
-serveur Shiny, vous pouvez exécuter en ligne de commande :
+-\> Pour lancer l’appli dans votre navigateur comme le ferait le serveur
+Shiny, vous pouvez exécuter en ligne de commande :
 
     Rscript -e 'shiny::runApp("mlExplore/", port=8000)'
 
--&gt; Si vous utilisez conda et que vous voulez en maîtriser
+-\> Si vous utilisez conda et que vous voulez en maîtriser
 l’environnement d’exécution
 
     conda env create -f binder/environment.yml
